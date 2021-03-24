@@ -51,10 +51,10 @@ module.exports = {
                 <div class="container">
                     <div class="row mt-6">
                         <div class="col-md-8 mx-auto text-center">
-                            <h1>ReconcIsle 🏝️</h1>
+                            <h1 style="font-family: Tahoma">reconcIsle 🏝️</h1>
                             <p class="lead mb-5">This is an <a href="http://openrefine.org">OpenRefine</a> reconciliation server.</p>
                             <p>To start reconciling: head over to your OpenRefine Instance, add <i>http://localhost:${port}/reconcile</i> as a reconciliation service and proceed.</p>    
-                            <a href="http://127.0.0.1:3333" class="btn btn-success" target="_blank">Take me there! 🚀</a>
+                            <a href="http://127.0.0.1:3333" class="btn btn-success" target="_blank">Take me there! ⛵</a>
                         </div>
                     </div>
                 </div>
