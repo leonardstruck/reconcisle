@@ -1,5 +1,5 @@
 import express from 'express';
-import { returnServiceMetadata, returnHomeHTML } from './serviceMetadata.js';
+import { returnServiceMetadata, returnHomeHTML } from './service.js';
 
 export function server(data, config) {
     const app = express();
