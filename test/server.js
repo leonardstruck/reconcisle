@@ -9,7 +9,7 @@ let should = chai.should()
 chai.use(chaiHttp)
 chai.use(chaiJsonSchema)
 
-describe('Server', () => {
+describe('route /reconcile/', () => {
     it('should return 404 on GET *', (done) => {
         chai.request(server)
             .get('/')
