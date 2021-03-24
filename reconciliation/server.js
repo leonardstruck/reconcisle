@@ -1,28 +1,32 @@
-const express = require('express')
-const app = express()
-app.use(express.json());
-const port = 3000
-const isTesting = require('detect-mocha')
-const serviceMetadata = require('./serviceMetadata');
+import express from 'express';
+import { returnServiceMetadata, returnHomeHTML } from './serviceMetadata.js';
 
-//Routes
-app.get('/reconcile', (req, res) => {
-    res.send(serviceMetadata.checkAndReturn(req, port, "get"))
-})
-app.post('/reconcile', (req, res) => {
-    res.send(serviceMetadata.checkAndReturn(req, port, "post"))
-})
-app.get('/', (req, res) => {
-    res.send(serviceMetadata.homeHTML(port));
-})
-app.get('*', (req, res) => {
-    res.status(404).send("ERROR 404")
-})
+export function server(data, config) {
+    const app = express();
+    app.use(express.json());
+    const port = config.port;
 
-app.listen(port, () => {
-    if(!isTesting()) {
-        console.log(`Reconciliation service listening at http://localhost:${port}`)
-    }
-})
+    //Routes
+    app.get('/reconcile', (req, res) => {
+    })
 
-module.exports = app
+    app.post('/reconcile', (req, res) => {
+    })
+
+    app.get('/', (req, res) => {
+        // check if it needs serviceMetadata
+        if(req.query.callback) {
+            res.jsonp(returnServiceMetadata(port))
+        } else {
+            res.send(returnHomeHTML(port))
+        }
+    })
+
+    app.get('*', (req, res) => {
+        res.status(404).send("ERROR 404")
+    })
+    
+    app.listen(port, () => {
+            console.log(`Reconciliation service listening at http://localhost:${port}`)
+    })
+}
