@@ -2,5 +2,7 @@
 
 A OpenRefine reconciliation service with a simple GUI.
 
-### currently supported data sources
+### data sources
 - MySQL (work in progress)
+- CSV (planned)
+
