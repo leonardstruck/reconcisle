@@ -16,7 +16,7 @@ app.get('/', (req, res) => {
     res.send(serviceMetadata.homeHTML(port));
 })
 app.get('*', (req, res) => {
-    res.status(404).send("invalid request")
+    res.status(404).send("ERROR 404")
 })
 
 app.listen(port, () => {

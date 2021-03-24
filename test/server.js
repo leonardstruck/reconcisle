@@ -9,15 +9,25 @@ let should = chai.should()
 chai.use(chaiHttp)
 chai.use(chaiJsonSchema)
 
-describe('route /reconcile/', () => {
-    it('should return 404 on GET *', (done) => {
+describe("route /", () => {
+    it('should return 404 when no route can be applied', (done) => {
         chai.request(server)
-            .get('/')
+            .get('/1012kasjdhj')
             .end((err, res) => {
                 res.should.have.status(404);
                 done();
             })
     })
+    it("should return a landing page when visited", (done) => {
+        chai.request(server)
+            .get("/")
+            .end((err, res) => {
+                res.should.have.status(200);
+                done();
+            })
+    })
+})
+describe('route /reconcile/', () => {
     it('should return the service metadata when no query/-ies are posted', (done) => {
         chai.request(server)
             .post('/reconcile')
