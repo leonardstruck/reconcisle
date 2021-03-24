@@ -12,6 +12,9 @@ app.get('/reconcile', (req, res) => {
 app.post('/reconcile', (req, res) => {
     res.send(serviceMetadata.checkAndReturn(req, port, "post"))
 })
+app.get('/', (req, res) => {
+    res.send(serviceMetadata.homeHTML(port));
+})
 app.get('*', (req, res) => {
     res.status(404).send("invalid request")
 })
