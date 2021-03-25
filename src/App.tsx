@@ -1,42 +1,24 @@
 import React from 'react';
-import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
+import { Button, Card, Heading, Text, ChevronRightIcon } from 'evergreen-ui';
 import icon from '../assets/icon.svg';
 import './App.global.css';
+import Open from './components/Open/Open';
 
 const Hello = () => {
   return (
-    <div>
+    <Card border="default" padding={50} background="tint1" elevation={4} justifyContent="center">
       <div className="Hello">
         <img width="200px" alt="icon" src={icon} />
       </div>
-      <h1>electron-react-boilerplate</h1>
+      <Heading textAlign="center" size={900} margin={10}>reconcIsle</Heading>
+      <Text>A OpenRefine reconciliation service with a simple GUI</Text>
       <div className="Hello">
-        <a
-          href="https://electron-react-boilerplate.js.org/"
-          target="_blank"
-          rel="noreferrer"
-        >
-          <button type="button">
-            <span role="img" aria-label="books">
-              📚
-            </span>
-            Read our docs
-          </button>
-        </a>
-        <a
-          href="https://github.com/sponsors/electron-react-boilerplate"
-          target="_blank"
-          rel="noreferrer"
-        >
-          <button type="button">
-            <span role="img" aria-label="books">
-              🙏
-            </span>
-            Donate
-          </button>
-        </a>
+        <Link to="/open">
+          <Button background="tint1" height={40} appearance="minimal" iconAfter={ChevronRightIcon}>Start</Button>
+        </Link>
       </div>
-    </div>
+    </Card>
   );
 };
 
@@ -44,6 +26,7 @@ export default function App() {
   return (
     <Router>
       <Switch>
+        <Route path="/open" component={Open} />
         <Route path="/" component={Hello} />
       </Switch>
     </Router>
