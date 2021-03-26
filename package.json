@@ -30,8 +30,8 @@
     ]
   },
   "build": {
-    "productName": "ElectronReact",
-    "appId": "org.erb.ElectronReact",
+    "productName": "reconcIsle",
+    "appId": "com.leonardstruck.reconcisle",
     "files": [
       "dist/",
       "node_modules/",

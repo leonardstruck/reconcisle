@@ -20,6 +20,11 @@ export default class AppUpdater {
   constructor() {
     log.transports.file.level = 'info';
     autoUpdater.logger = log;
+    autoUpdater.setFeedURL({
+      owner: 'leonardstruck',
+      repo: 'reconcisle',
+      provider: 'github'
+    });
     autoUpdater.checkForUpdatesAndNotify();
   }
 }
