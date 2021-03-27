@@ -21,7 +21,7 @@
   "config": {
     "forge": {
       "packagerConfig": {
-        "icon": "./src/assests/icon/icon.icns",
+        "icon": "./src/assets/icon/icon.icns",
         "osxSign": {
           "hardened-runtime": true,
           "gatekeeper-assess": false,
