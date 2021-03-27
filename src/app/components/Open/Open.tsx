@@ -4,6 +4,8 @@ import { Helmet } from "react-helmet";
 
 import { Button, ButtonGroup, Card, Elevation } from "@blueprintjs/core";
 
+import {ipcRenderer} from 'electron';
+
 import ProjectList from "./ProjectList";
 
 
@@ -21,7 +23,9 @@ export default function Open() {
               Back
             </Button>
           </Link>
-          <Button icon="plus" intent="success">
+          <Button icon="plus" intent="success" onClick={() => {
+            ipcRenderer.send("test", "hallelujah")
+          }}>
             Create New Project
           </Button>
         </ButtonGroup>

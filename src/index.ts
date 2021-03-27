@@ -10,7 +10,11 @@ const createWindow = (): void => {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
     height: 800,
-    width: 700
+    width: 700,
+    webPreferences: {
+      nodeIntegration: true,
+      contextIsolation: false
+    }
   });
 
   // and load the index.html of the app.
@@ -150,3 +154,7 @@ if (process.platform == 'darwin') {
 
 const menu = Menu.buildFromTemplate(template);
 //Menu.setApplicationMenu(menu);
+
+ipcMain.on("test", (event, arg) => {
+  console.log(arg);
+})

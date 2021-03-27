@@ -11,5 +11,8 @@ module.exports = [
   }),
   new webpack.DefinePlugin({
     "process.env": "{}"
-  })
+  }),
+  new webpack.ExternalsPlugin('commmonjs', [
+    'electron'
+  ])
 ];
