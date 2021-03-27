@@ -115,6 +115,7 @@
   "dependencies": {
     "@blueprintjs/core": "^3.42.0",
     "@blueprintjs/popover2": "^0.4.0",
+    "electron-is-dev": "^2.0.0",
     "electron-squirrel-startup": "^1.0.0",
     "electron-storage": "^1.0.7",
     "react": "^17.0.2",

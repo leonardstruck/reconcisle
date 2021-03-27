@@ -1,6 +1,10 @@
 import React from "react";
-import { HTMLTable, Button, Menu } from "@blueprintjs/core";
+import { useState, useEffect } from "react";
+import { HTMLTable, Button, Menu, Spinner, NonIdealState } from "@blueprintjs/core";
 import { Popover2 as Popover } from "@blueprintjs/popover2"
+
+import {ipcRenderer} from 'electron';
+
 
 function SubMenu() {
   return (
@@ -20,32 +24,53 @@ function SubMenu() {
 }
 
 export default function ProjectList() {
-  return (
-    <HTMLTable style={{ flexGrow: 1 }} interactive={true}>
-      <thead>
-        <tr>
-          <th>Please select a project</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>Projekt 1</td>
-          <td>
-            <SubMenu />
-          </td>
-        </tr>
-        <tr>
-          <td>Projekt 2</td>
-          <td>
-            <SubMenu />
-          </td>
-        </tr><tr>
-          <td>Projekt 3</td>
-          <td>
-            <SubMenu />
-          </td>
-        </tr>
-      </tbody>
-    </HTMLTable>
-  );
+  const [isLoading, setIsLoading] = useState(true);
+  useEffect(() => {
+    ipcRenderer.send("test", "yay");
+    const onAnswer = () => {
+      setIsLoading(false);
+    }
+    ipcRenderer.on("testA", onAnswer)
+    return () => {
+      ipcRenderer.removeListener("testA", onAnswer);
+    }
+  });
+
+  if(isLoading) {
+    return (
+      <NonIdealState 
+      icon={<Spinner />}
+        title="Reading Database"
+      />
+    );
+  } else {
+    return (
+      <HTMLTable style={{ flexGrow: 1 }} interactive={true}>
+        <thead>
+          <tr>
+            <th>Please select a project</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Projekt 1</td>
+            <td>
+              <SubMenu />
+            </td>
+          </tr>
+          <tr>
+            <td>Projekt 2</td>
+            <td>
+              <SubMenu />
+            </td>
+          </tr><tr>
+            <td>Projekt 3</td>
+            <td>
+              <SubMenu />
+            </td>
+          </tr>
+        </tbody>
+      </HTMLTable>
+    )
+  }
 }

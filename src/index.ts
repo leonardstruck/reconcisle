@@ -19,12 +19,20 @@ const createWindow = (): void => {
 
   // and load the index.html of the app.
   mainWindow.loadURL(MAIN_WINDOW_WEBPACK_ENTRY);
+
+  const isDev = require('electron-is-dev');
+
+  if(isDev) {
+    mainWindow.webContents.openDevTools()
+  }
+
 };
 
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 app.on('ready', createWindow);
+
 
 // Quit when all windows are closed, except on macOS. There, it's common
 // for applications and their menu bar to stay active until the user quits
@@ -153,8 +161,11 @@ if (process.platform == 'darwin') {
 }
 
 const menu = Menu.buildFromTemplate(template);
-//Menu.setApplicationMenu(menu);
+Menu.setApplicationMenu(menu);
 
 ipcMain.on("test", (event, arg) => {
-  console.log(arg);
+  console.log(arg)
+  setTimeout(() => {
+    event.reply("testA", "bubu")
+  }, 2000)
 })
