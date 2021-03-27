@@ -20,6 +20,16 @@ rules.push({
   ]
 })
 
+rules.push({
+  test: /\.(png|jp(e*)g|svg)$/,  
+  use: [{
+      loader: 'url-loader',
+      options: {
+        name: '[name]-[hash].[ext]',
+        outputPath: 'images/'
+      }
+    }]
+});
 
 module.exports = {
   module: {
