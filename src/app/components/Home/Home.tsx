@@ -1,16 +1,21 @@
 import * as React from "react";
-import { Link as RLink } from "react-router-dom";
+import { Link } from "react-router-dom";
+import { Helmet } from 'react-helmet'; 
 
-import { Button, Heading, Pane } from "evergreen-ui";
+import { Button, Card, Elevation } from "@blueprintjs/core";
 
 export default function Home() {
   return (
-    <Pane width="100%" height="100%" display="flex" background="tint2">
-      <Pane background="tint1" elevation={1} width={400} height={500} margin="auto" display="flex" flexDirection="column" alignItems="center" justifyContent="center">
-        <img src="./assets/island.svg" />
-        <Heading size={700} padding={10}>reconcIsle</Heading>
-        <Button is={RLink} to="/open">Open Project</Button>
-      </Pane>
-    </Pane>
+    <>
+    <Helmet>
+      <title>reconcIsle - Home</title>
+    </Helmet>
+    <Card elevation={Elevation.FOUR} className="centeredCard">
+      <img src="./assets/island.svg" />
+      <h3 className="bp3-heading" >reconcIsle</h3>
+      <p className="bp3-text-large">A OpenRefine reconciliation service with a simple GUI.</p>
+      <Link to="/open"><Button rightIcon="arrow-right" intent="primary" minimal={true} fill={true}>Let's get started</Button></Link>
+    </Card>
+    </>
   );
 }

@@ -1,13 +1,15 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
+import { hot } from 'react-hot-loader';
 import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
+import "./app.css";
 
 //import Components
 import Home from "./components/Home/Home";
 import Open from "./components/Open/Open";
 
 
-export default function App() {
+export function App() {
   return (
     <Router>
       <Switch>
@@ -21,5 +23,7 @@ export default function App() {
     </Router>
   );
 }
+
+export default hot(module)(App);
 
 ReactDOM.render(<App />, document.getElementById('App'));

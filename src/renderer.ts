@@ -28,3 +28,7 @@
 console.log('👋 This message is being logged by "renderer.js", included via webpack');
 
 import './app/app'
+import "@blueprintjs/core/lib/css/blueprint.css";
+import "@blueprintjs/icons/lib/css/blueprint-icons.css";
+import "normalize.css/normalize.css"
+import "@blueprintjs/popover2/lib/css/blueprint-popover2.css";
