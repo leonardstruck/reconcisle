@@ -8,8 +8,18 @@
       "eslint:recommended",
       "plugin:@typescript-eslint/eslint-recommended",
       "plugin:@typescript-eslint/recommended",
+      "plugin:react/recommended",
       "plugin:import/errors",
       "plugin:import/warnings"
     ],
-    "parser": "@typescript-eslint/parser"
+    "parser": "@typescript-eslint/parser",
+    "parserOptions": {
+      "sourceType": "module",
+      "ecmaFeatures": {"jsx": true}
+    },
+    "settings": {
+      "react": {
+        "version": "detect"
+      }
+    }
 }

@@ -4,6 +4,7 @@ import { HTMLTable, Button, Menu, Spinner, NonIdealState } from "@blueprintjs/co
 import { Popover2 as Popover } from "@blueprintjs/popover2"
 
 import {storeHandler}  from '../storeHandler';
+import StartProject from "./StartProject";
 
 
 function SubMenu() {
@@ -25,8 +26,11 @@ function SubMenu() {
 
 export default function ProjectList() {
   const [isLoading, setIsLoading] = useState(true);
-  const [projects, setProjects] = useState({projects: []});
-  const [projectCount, setProjectCount] = useState(0);
+  const [projects, setProjects] = useState<object | unknown>({projects: []});
+  const [projectCount, setProjectCount] = useState<number | unknown>(0);
+  const [startProjectState, setStartProjectState] = useState({
+    isOpen: false,
+  })
   useEffect(() => {
     storeHandler({store: "projects", method: "size"}).then((response) => {
       setProjectCount(response);
@@ -45,12 +49,17 @@ export default function ProjectList() {
       />
     );
   } else if(projectCount === 0) {
+    const handleOpen = () => {setStartProjectState({isOpen: true})};
+    const handleClose = () => {setStartProjectState({isOpen: false})};
     return(
+      <>
       <NonIdealState 
         title="No projects found"
         icon="folder-new"
-        action={<Button>Start a new Project</Button>}
+        action={<Button onClick={handleOpen}>Start a new Project</Button>}
       />
+      <StartProject {...startProjectState} onClose={handleClose} />
+      </>
     )
   }
   else {

@@ -18,3 +18,7 @@ body {
 a:hover{
     text-decoration: none !important;
 }
+
+.bp3-form-group {
+    padding: 20px;
+}
