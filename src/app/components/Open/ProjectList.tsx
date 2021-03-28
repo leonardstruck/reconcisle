@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { HTMLTable, Button, Menu, Spinner, NonIdealState } from "@blueprintjs/core";
 import { Popover2 as Popover } from "@blueprintjs/popover2"
 
-import {ipcRenderer} from 'electron';
+import {storeHandler}  from '../storeHandler';
 
 
 function SubMenu() {
@@ -25,16 +25,17 @@ function SubMenu() {
 
 export default function ProjectList() {
   const [isLoading, setIsLoading] = useState(true);
+  const [projects, setProjects] = useState({projects: []});
+  const [projectCount, setProjectCount] = useState(0);
   useEffect(() => {
-    ipcRenderer.send("test", "yay");
-    const onAnswer = () => {
-      setIsLoading(false);
-    }
-    ipcRenderer.on("testA", onAnswer)
-    return () => {
-      ipcRenderer.removeListener("testA", onAnswer);
-    }
+    storeHandler({store: "projects", method: "size"}).then((response) => {
+      setProjectCount(response);
+    })
+  storeHandler({store: "projects", method: "store"}).then((response) => {
+    setProjects(response);
+    setIsLoading(false);
   });
+  }, []);
 
   if(isLoading) {
     return (
@@ -43,7 +44,16 @@ export default function ProjectList() {
         title="Reading Database"
       />
     );
-  } else {
+  } else if(projectCount === 0) {
+    return(
+      <NonIdealState 
+        title="No projects found"
+        icon="folder-new"
+        action={<Button>Start a new Project</Button>}
+      />
+    )
+  }
+  else {
     return (
       <HTMLTable style={{ flexGrow: 1 }} interactive={true}>
         <thead>
