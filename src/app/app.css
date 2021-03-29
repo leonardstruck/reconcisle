@@ -1,25 +1,25 @@
 body {
-    background:linear-gradient(-45deg, #A7BFE8, #23a6d5, #23d5ab);
+    background:linear-gradient(-45deg, #23d5ab, #23a6d5, #A7BFE8);
     background-size: 400% 400%;
-    animation: gradient 15s ease infinite, blendin 2s ease forwards;
-    -webkit-animation: gradient 15s ease infinite, blendin 2s ease forwards;
+    animation: gradient 15s ease 2s infinite, blendin 2s ease forwards;
+    -webkit-animation: gradient 15s ease 2s infinite, blendin 2s ease forwards;
 }
 
 @keyframes gradient {
     0% {
-        background-position: 0% 50%;
+        background-position: 0% 0%;
     }
     50% {
         background-position: 100% 50%;
     }
     100% {
-        background-position: 0% 50%;
+        background-position: 0% 0%;
     }
 }
 
 @keyframes blendin {
-    from {opacity: 0}
-    to {opacity: 1}
+    from { opacity: 0; transform: scale(0.95); -webkit-transform: scale(0.95); -moz-transform: scale(0.95); -ms-transform: scale(0.95); -o-transform: scale(0.95); }
+    to { opacity: 1; transform: scale(1); -webkit-transform: scale(1); -moz-transform: scale(1); -ms-transform: scale(1); -o-transform: scale(1); }
 }
 
 .centeredCard {
