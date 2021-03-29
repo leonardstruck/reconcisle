@@ -39,6 +39,11 @@ a:hover{
     text-decoration: none !important;
 }
 
+.bp3-multistep-dialog-right-panel {
+    max-height: 450px;
+    overflow-y: scroll;
+}
+
 .bp3-form-group {
-    padding: 20px;
+    margin: 15px 10px !important;
 }
