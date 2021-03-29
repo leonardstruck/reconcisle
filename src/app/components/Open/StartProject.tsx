@@ -24,6 +24,7 @@ export const StartProject:React.FunctionComponent<{ onClose: () => void}> = (pro
     return (
         <MultistepDialog
             title="Start a new Project"
+            nextButtonProps={{disabled: projectOptions.name === ""}}
             {...props}
         >
             <DialogStep
