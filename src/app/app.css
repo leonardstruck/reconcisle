@@ -1,5 +1,25 @@
 body {
-    background:linear-gradient(#A7BFE8, #6190E8);
+    background:linear-gradient(-45deg, #A7BFE8, #23a6d5, #23d5ab);
+    background-size: 400% 400%;
+    animation: gradient 15s ease infinite, blendin 2s ease forwards;
+    -webkit-animation: gradient 15s ease infinite, blendin 2s ease forwards;
+}
+
+@keyframes gradient {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+@keyframes blendin {
+    from {opacity: 0}
+    to {opacity: 1}
 }
 
 .centeredCard {

@@ -5,11 +5,11 @@ import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import "./app.css";
 
 //import Components
-import Home from "./components/Home/Home";
+import { Home } from "./components/Home/Home";
 import { Open } from "./components/Open/Open";
 
 
-export function App() {
+export const App:React.FunctionComponent = () => {
   return (
     <Router>
       <Switch>

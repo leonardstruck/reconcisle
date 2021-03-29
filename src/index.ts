@@ -16,7 +16,9 @@ const createWindow = (): void => {
     webPreferences: {
       nodeIntegration: true,
       contextIsolation: false
-    }
+    },
+    backgroundColor: "#A7BFE8",
+    show: false
   });
 
   // and load the index.html of the app.
@@ -25,6 +27,10 @@ const createWindow = (): void => {
   if(isDev) {
     mainWindow.webContents.openDevTools()
   }
+
+  mainWindow.once('ready-to-show', () => {
+    mainWindow.show()
+  })
 
 };
 

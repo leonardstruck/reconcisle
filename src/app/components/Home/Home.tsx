@@ -7,7 +7,7 @@ import Island from "../../../assets/island.svg";
 
 
 
-export default function Home() {
+export const Home:React.FunctionComponent = () => {
   return (
     <>
     <Helmet>
