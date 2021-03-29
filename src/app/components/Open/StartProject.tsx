@@ -5,11 +5,14 @@ import slugify from "slugify";
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import {storeHandler}  from '../storeHandler';
 
+import { Source } from './Source/Source';
+
 export const StartProject:React.FunctionComponent<{ onClose: () => void}> = (props) => {
-    const [projectOptions, setProjectOptions] = useState({
-        source: "sql",
+    const defaultState = {
+        source: "database",
         name: ""
-    });
+    }
+    const [projectOptions, setProjectOptions] = useState(defaultState);
 
     const handleSourceChange = (event: React.FormEvent<HTMLInputElement>) => {
         setProjectOptions({...projectOptions, source: event.currentTarget.value})
@@ -26,6 +29,7 @@ export const StartProject:React.FunctionComponent<{ onClose: () => void}> = (pro
             title="Start a new Project"
             nextButtonProps={{disabled: projectOptions.name === ""}}
             {...props}
+            onClosing={() => {setProjectOptions(defaultState)}}
         >
             <DialogStep
                 id="general"
@@ -49,7 +53,7 @@ export const StartProject:React.FunctionComponent<{ onClose: () => void}> = (pro
                             selectedValue={projectOptions.source}
                             onChange={handleSourceChange}
                         >
-                            <Radio label="SQL" value="sql" />
+                            <Radio label="Postgres, MySQL, MariaDB, SQLite, Microsoft SQL Server" value="database" />
                             <Radio label="CSV (coming soon...)" value="csv" disabled={true} />
                             <Radio label="Excel (coming soon...)" value="excel" disabled={true} />
                         </RadioGroup>
@@ -60,9 +64,15 @@ export const StartProject:React.FunctionComponent<{ onClose: () => void}> = (pro
             />
             <DialogStep
                 id="source"
-                panel={<div><h1>This is the source panel</h1></div>}
+                panel={<Source source={projectOptions.source} />}
                 title="Configure Source"
+                style={{overflowY: "scroll", maxHeight: 500}}
             />
+            <DialogStep
+                id="reconcparams"
+                panel={<div><h1>Reconciliation Parameters</h1></div>}
+                title="Set Reconciliation Parameters"
+                />
         </MultistepDialog>
     )
 }

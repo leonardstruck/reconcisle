@@ -116,18 +116,21 @@
   "dependencies": {
     "@blueprintjs/core": "^3.42.0",
     "@blueprintjs/popover2": "^0.4.0",
+    "@blueprintjs/select": "^3.15.9",
     "ajv": "^8.0.1",
     "ajv-formats": "^2.0.0",
     "electron-is-dev": "^2.0.0",
     "electron-squirrel-startup": "^1.0.0",
     "electron-storage": "^1.0.7",
     "electron-store": "^7.0.2",
+    "mysql2": "^2.2.5",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-helmet": "^6.1.0",
     "react-hot-loader": "^4.13.0",
     "react-router-dom": "^5.2.0",
     "react-uuid": "^1.0.2",
+    "sequelize": "^6.6.2",
     "slugify": "^1.5.0",
     "update-electron-app": "^2.0.1"
   }

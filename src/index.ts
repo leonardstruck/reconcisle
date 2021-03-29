@@ -1,6 +1,7 @@
 import { app, Menu, BrowserWindow, ipcMain } from 'electron';
 declare const MAIN_WINDOW_WEBPACK_ENTRY;
 import { store } from './store';
+import { service } from './service';
 import isDev from "electron-is-dev";
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
@@ -171,6 +172,12 @@ Menu.setApplicationMenu(menu);
 
 ipcMain.on("store", (event, arg) => {
   const result = store(arg.store, arg.method, arg.obj)
+  event.reply(arg.reqId, result);
+})
+
+ipcMain.on("service", (event, arg) => {
+  console.log(arg);
+  const result = service(arg.service, arg.method, arg.obj);
   event.reply(arg.reqId, result);
 })
 
