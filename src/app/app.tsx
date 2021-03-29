@@ -6,7 +6,7 @@ import "./app.css";
 
 //import Components
 import Home from "./components/Home/Home";
-import Open from "./components/Open/Open";
+import { Open } from "./components/Open/Open";
 
 
 export function App() {

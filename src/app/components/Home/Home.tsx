@@ -17,7 +17,7 @@ export default function Home() {
       <img src={Island} />
       <h3 className="bp3-heading" >reconcIsle</h3>
       <p className="bp3-text-large">A OpenRefine reconciliation service with a simple GUI.</p>
-      <Link to="/open"><Button rightIcon="arrow-right" intent="primary" minimal={true} fill={true}>Let's get started</Button></Link>
+      <Link to="/open"><Button rightIcon="arrow-right" intent="primary" minimal={true} fill={true}>Let&apos;s get started</Button></Link>
     </Card>
     </>
   );

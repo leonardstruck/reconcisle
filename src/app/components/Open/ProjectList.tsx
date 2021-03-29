@@ -1,10 +1,9 @@
-import React from "react";
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { HTMLTable, Button, Menu, Spinner, NonIdealState } from "@blueprintjs/core";
 import { Popover2 as Popover } from "@blueprintjs/popover2"
 
 import {storeHandler}  from '../storeHandler';
-import StartProject from "./StartProject";
+import {StartProject} from "./StartProject";
 
 
 function SubMenu() {
@@ -24,9 +23,10 @@ function SubMenu() {
 )
 }
 
-export default function ProjectList() {
+export  const ProjectList:React.FunctionComponent = () => {
   const [isLoading, setIsLoading] = useState(true);
-  const [projects, setProjects] = useState<object | unknown>({projects: []});
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [projects, setProjects] = useState<string | unknown>({});
   const [projectCount, setProjectCount] = useState<number | unknown>(0);
   const [startProjectState, setStartProjectState] = useState({
     isOpen: false,

@@ -5,7 +5,7 @@ const projects = new Store({
     name: "projects"
 })
 
-export function store(store, method, obj) {
+export const store = (store: string, method: string, obj: { key: string }):unknown => {
     switch(store) {
         case 'projects':
             switch(method) {

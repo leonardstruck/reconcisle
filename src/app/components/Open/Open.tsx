@@ -4,10 +4,10 @@ import { Helmet } from "react-helmet";
 
 import { Button, Card, Elevation } from "@blueprintjs/core";
 
-import ProjectList from "./ProjectList";
+import {ProjectList} from "./ProjectList";
 
 
-export default function Open() {
+export const Open:React.FunctionComponent = () => {
   return (
     <>
       <Helmet>

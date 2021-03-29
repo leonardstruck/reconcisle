@@ -2,19 +2,20 @@ import { DialogStep, FormGroup, InputGroup, MultistepDialog, Radio, RadioGroup, 
 import React, { useState } from "react";
 import slugify from "slugify";
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import {storeHandler}  from '../storeHandler';
 
-export default function StartProject(props:any) {
+export const StartProject:React.FunctionComponent<{ onClose: () => void}> = (props) => {
     const [projectOptions, setProjectOptions] = useState({
         source: "sql",
         name: ""
     });
 
-    const handleSourceChange = (event) => {
+    const handleSourceChange = (event: React.FormEvent<HTMLInputElement>) => {
         setProjectOptions({...projectOptions, source: event.currentTarget.value})
     }
 
-    const handleNameChange = (event) => {
+    const handleNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const withoutSpace = slugify(event.currentTarget.value, {lower: true, remove: /[*_+~,.()'"!:@]/g});
         event.currentTarget.value = withoutSpace;
         setProjectOptions({...projectOptions, name: withoutSpace})
