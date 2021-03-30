@@ -3,6 +3,9 @@ declare const MAIN_WINDOW_WEBPACK_ENTRY;
 import { store } from './store';
 import { service } from './service';
 import isDev from "electron-is-dev";
+import electronUnhandled from "electron-unhandled";
+
+electronUnhandled();
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require('electron-squirrel-startup')) { // eslint-disable-line global-require

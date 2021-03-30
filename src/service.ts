@@ -1,4 +1,5 @@
 import { Sequelize } from 'sequelize';
+import mysql2 from 'mysql2';
 
 export const service = async (service:string, method:string, obj:{host: string, port: number, username: string, password: string, database: string, table: string, status: string, type: string}):Promise<{ [key: string]: unknown; }> => {
     let sequelize;
@@ -9,8 +10,10 @@ export const service = async (service:string, method:string, obj:{host: string, 
                     console.log("Establishing mysql-connection");
                     sequelize = new Sequelize(obj.database, obj.username, obj.password, {
                         dialect: "mysql",
+                        dialectModule: mysql2,
                         host: obj.host,
-                        port: obj.port
+                        port: obj.port,
+                        logging: msg => alert(msg)
                     })
                     switch(method) {
                         case "getTables":
