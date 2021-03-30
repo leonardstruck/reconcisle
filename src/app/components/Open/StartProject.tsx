@@ -1,5 +1,5 @@
 import { DialogStep, FormGroup, InputGroup, MultistepDialog, Radio, RadioGroup, Callout } from "@blueprintjs/core";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import slugify from "slugify";
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -9,10 +9,19 @@ import { Source } from './Source/Source';
 
 export const StartProject:React.FunctionComponent<{ onClose: () => void}> = (props) => {
     const defaultState = {
-        source: "database",
+        source: "",
+        sourceOptions: {},
         name: ""
     }
     const [projectOptions, setProjectOptions] = useState(defaultState);
+    const [sourceOptions, setSourceOptions] = useState({});
+    const [nextButtonDisabled, setNextButtonDisabled] = useState(true);
+
+    useEffect(() => {
+        if(projectOptions.source !== "") {
+            setProjectOptions({...projectOptions, sourceOptions: sourceOptions});
+        }
+    }, [sourceOptions])
 
     const handleSourceChange = (event: React.FormEvent<HTMLInputElement>) => {
         setProjectOptions({...projectOptions, source: event.currentTarget.value})
@@ -22,12 +31,15 @@ export const StartProject:React.FunctionComponent<{ onClose: () => void}> = (pro
         const withoutSpace = slugify(event.currentTarget.value, {lower: true, remove: /[*_+~,.()'"!:@]/g});
         event.currentTarget.value = withoutSpace;
         setProjectOptions({...projectOptions, name: withoutSpace})
+        if(event.currentTarget.value !== "") {
+            setNextButtonDisabled(false);
+        }
     }
 
     return (
         <MultistepDialog
             title="Start a new Project"
-            nextButtonProps={{disabled: projectOptions.name === ""}}
+            nextButtonProps={{disabled: nextButtonDisabled}}
             {...props}
             onClosing={() => {setProjectOptions(defaultState)}}
         >
@@ -64,7 +76,7 @@ export const StartProject:React.FunctionComponent<{ onClose: () => void}> = (pro
             />
             <DialogStep
                 id="source"
-                panel={<Source source={projectOptions.source} />}
+                panel={<Source source={projectOptions.source} setNextButtonDisabled={setNextButtonDisabled} sourceOptions={sourceOptions} setSourceOptions={setSourceOptions}/>}
                 title="Configure Source"
                 style={{overflowY: "scroll", maxHeight: 500}}
             />

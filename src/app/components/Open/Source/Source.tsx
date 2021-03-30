@@ -2,25 +2,35 @@ import { FormGroup, InputGroup, MenuItem, Callout, RadioGroup, Radio, Collapse, 
 import { Tooltip2 } from "@blueprintjs/popover2";
 import { Select } from "@blueprintjs/select";
 
-import React, { useState } from "react";
+import React, { SetStateAction, useEffect, useState } from "react";
 
 import { serviceHandler } from "../../serviceHandler";
 
-export const Source:React.FunctionComponent<{ source: string}> = (props) => {
-    const [selectedSource, setSelectedSource] = useState("");
+export const Source:React.FunctionComponent<{ source: string, sourceOptions, setSourceOptions: React.Dispatch<SetStateAction<object>>, setNextButtonDisabled: React.Dispatch<SetStateAction<boolean>>}> = (props) => {
+    const [selectedSource, setSelectedSource] = useState(props.sourceOptions.source ? props.sourceOptions.source : "");
+    useEffect(() => {
+        props.setNextButtonDisabled(true);
+    }, [])
+
     const [connectionData, setConnectionData] = useState({
         "mysql": {
-            host: "localhost",
-            port: 3306,
-            username: "",
-            password: "",
-            database: "",
-            table: "",
-            status: ""
+            host: (props.sourceOptions.source === "mysql" ? props.sourceOptions.host : "localhost"),
+            port: (props.sourceOptions.source === "mysql" ? props.sourceOptions.port: 3306),
+            username: (props.sourceOptions.source === "mysql" ? props.sourceOptions.username : ""),
+            password: (props.sourceOptions.source === "mysql" ? props.sourceOptions.password : ""),
+            database: (props.sourceOptions.source === "mysql" ? props.sourceOptions.database : ""),
+            table: (props.sourceOptions.source === "mysql" ? props.sourceOptions.table : ""),
+            status: (props.sourceOptions.source === "mysql" ? props.sourceOptions.status : "")
         }
     })
-    const [toasts, setToasts] = useState([]);
 
+    useEffect(() => {
+        if(selectedSource !== "") {
+            props.setSourceOptions({ source: selectedSource, ...connectionData[selectedSource]});
+        }
+    }, [connectionData[selectedSource]])
+
+    const [toasts, setToasts] = useState([]);
     
     return (
         <>
@@ -46,7 +56,7 @@ export const Source:React.FunctionComponent<{ source: string}> = (props) => {
             </RadioGroup>
         </FormGroup>
         <Collapse isOpen={selectedSource !== ""}>
-            <Config source={selectedSource} setToasts={setToasts} connectionData={connectionData} setConnectionData={setConnectionData} />
+            <Config source={selectedSource} setNextButtonDisabled={props.setNextButtonDisabled} setToasts={setToasts} connectionData={connectionData} setConnectionData={setConnectionData} />
         </Collapse>
         </>
     );
@@ -65,6 +75,9 @@ const Config = (props) => {
     const [isRefreshing, setIsRefreshing] = useState(false);
     const [connectButtonDisabled, setConnectButtonDisabled] = useState(false);
     const [refreshButtonDisabled, setRefreshButtonDisabled] = useState(true);
+    const handleSetNextButtonDisabled = (bool) => {
+        props.setNextButtonDisabled(bool);
+    }
 
     const checkFields = () => {
         let response = true;
@@ -101,6 +114,7 @@ const Config = (props) => {
         const prev = connectionData[props.source];
         setConnectionData({...connectionData, [props.source]: {...prev, [e.currentTarget.id]: newData}, status: "", table: ""})
         setRefreshButtonDisabled(true);
+        handleSetNextButtonDisabled(true);
         setIsConnected(false);
         connectButtonDisabled && setConnectButtonDisabled(false);
     }
@@ -156,6 +170,7 @@ const Config = (props) => {
                     onClick={() => {
                         const prev = connectionData[props.source];
                         setConnectionData({...connectionData, [props.source]: {...prev, "table": table}})
+                        handleSetNextButtonDisabled(false);
                     }}
                     />
             )
