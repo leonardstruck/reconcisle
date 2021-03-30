@@ -12,8 +12,7 @@ export const service = async (service:string, method:string, obj:{host: string, 
                         dialect: "mysql",
                         dialectModule: mysql2,
                         host: obj.host,
-                        port: obj.port,
-                        logging: msg => alert(msg)
+                        port: obj.port
                     })
                     switch(method) {
                         case "getTables":
