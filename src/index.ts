@@ -21,7 +21,7 @@ const createWindow = (): void => {
       nodeIntegration: true,
       contextIsolation: false
     },
-    backgroundColor: "#A7BFE8",
+    backgroundColor: "#5C747A",
     show: false
   });
 
