@@ -1,8 +1,8 @@
 body {
-    background:linear-gradient(-45deg, #23d5ab, #23a6d5, #A7BFE8);
-    background-size: 400% 400%;
-    animation: gradient 15s ease 2s infinite, blendin 2s ease forwards;
-    -webkit-animation: gradient 15s ease 2s infinite, blendin 2s ease forwards;
+    background:linear-gradient(-45deg, #F2C8AD, #CC8E6D, #5C747A);
+    background-size: 600% 600%;
+    animation: gradient 30s ease 2s infinite, blendin 2s ease forwards;
+    -webkit-animation: gradient 30s ease 2s infinite, blendin 2s ease forwards;
 }
 
 @keyframes gradient {
