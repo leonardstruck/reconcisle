@@ -41,7 +41,7 @@ export const StartProject:React.FunctionComponent<{ onClose: () => void}> = (pro
             title="Start a new Project"
             nextButtonProps={{disabled: nextButtonDisabled}}
             {...props}
-            onClosing={() => {setProjectOptions(defaultState)}}
+            onClosing={() => {setProjectOptions(defaultState); setSourceOptions({})}}
         >
             <DialogStep
                 id="general"

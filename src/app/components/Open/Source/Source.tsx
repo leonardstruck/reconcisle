@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import { FormGroup, InputGroup, MenuItem, Callout, RadioGroup, Radio, Collapse, Button, Intent, ButtonGroup, Toaster, Toast, Position } from "@blueprintjs/core";
 import { Tooltip2 } from "@blueprintjs/popover2";
 import { Select } from "@blueprintjs/select";
@@ -6,7 +7,7 @@ import React, { SetStateAction, useEffect, useState } from "react";
 
 import { serviceHandler } from "../../serviceHandler";
 
-export const Source:React.FunctionComponent<{ source: string, sourceOptions, setSourceOptions: React.Dispatch<SetStateAction<object>>, setNextButtonDisabled: React.Dispatch<SetStateAction<boolean>>}> = (props) => {
+export const Source:React.FunctionComponent<{ source: string, sourceOptions:{[key: string]: string | number}, setSourceOptions: React.Dispatch<SetStateAction<undefined>>, setNextButtonDisabled: React.Dispatch<SetStateAction<boolean>>}> = (props) => {
     const [selectedSource, setSelectedSource] = useState(props.sourceOptions.source ? props.sourceOptions.source : "");
     useEffect(() => {
         props.setNextButtonDisabled(true);
@@ -56,7 +57,7 @@ export const Source:React.FunctionComponent<{ source: string, sourceOptions, set
             </RadioGroup>
         </FormGroup>
         <Collapse isOpen={selectedSource !== ""}>
-            <Config source={selectedSource} setNextButtonDisabled={props.setNextButtonDisabled} setToasts={setToasts} connectionData={connectionData} setConnectionData={setConnectionData} />
+            <Config source={selectedSource} setNextButtonDisabled={props.setNextButtonDisabled} setToasts={setToasts} connectionData={connectionData} setConnectionData={setConnectionData} />
         </Collapse>
         </>
     );
@@ -70,6 +71,7 @@ const Config = (props) => {
     const setConnectionData = props.setConnectionData;
     const [showPassword, setShowPassword] = useState(false);
     const [isConnecting, setIsConnecting] = useState(false);
+    const [availableTables, setAvailableTables] = useState([]);
     const [isFaulty, setIsFaulty] = useState([]);
     const [isConnected, setIsConnected] = useState(false);
     const [isRefreshing, setIsRefreshing] = useState(false);
@@ -82,7 +84,7 @@ const Config = (props) => {
     const checkFields = () => {
         let response = true;
         const areFaulty = [];
-        for (let key in serviceConnectionData) {
+        for (const key in serviceConnectionData) {
             if (serviceConnectionData[key] === null || serviceConnectionData[key] == "" && key != "table" && key != "status") {
                 areFaulty.push(key);
                 response = false;
@@ -91,7 +93,7 @@ const Config = (props) => {
         if(!response) {
             const toasts = [];
             areFaulty.map((fault) => {
-                toasts.push({message: "Check field \”"+fault+"\"!", intent:"warning"})
+                toasts.push({message: "Check field ”"+fault+"”!", intent:"warning"})
             })
             setIsFaulty(areFaulty);
             setToasts(toasts);
@@ -134,7 +136,7 @@ const Config = (props) => {
         if(checkFields()) {
             setIsConnecting(true);
             const sendObj = {...connectionData[props.source], type: props.source};
-            serviceHandler({service: "database", method: "checkAuth", obj: sendObj}).then((response:any) => {
+            serviceHandler({service: "database", method: "getTables", obj: sendObj}).then((response:{status: string, tables: undefined}) => {
                 if(response.status === "ok"){
                     const prev = connectionData[props.source];
                     setConnectionData({...connectionData, [props.source]: {...prev, "status": "ok"}});
@@ -142,7 +144,10 @@ const Config = (props) => {
                     setConnectButtonDisabled(true);
                     setIsConnected(true);
                     setIsFaulty([]);
-                    setToasts([{message: "Connection successful!", intent:"success"}]);
+                    setToasts([{message: "Connection established!", intent:"success"}]);
+                    setAvailableTables(response.tables);
+                } else {
+                    setToasts([{message: response.status, intent:"danger"}])
                 }
                 setIsConnecting(false);
             })
@@ -153,15 +158,25 @@ const Config = (props) => {
     const handleRefresh = () => {
         setIsRefreshing(true);
         const sendObj = {...connectionData[props.source], type: props.source};
-        serviceHandler({service: "database", method: "getTables", obj: sendObj}).then((response:any) => {
+        serviceHandler({service: "database", method: "getTables", obj: sendObj}).then((response:{status: string, tables: undefined}) => {
+            if(response.status === "ok") {
+                const prev = connectionData[props.source];
+                setConnectionData({...connectionData, [props.source]: {...prev, "status": "ok"}}); 
+                setAvailableTables(response.tables);
+                setToasts([{message: "Fetched new table data", intent:"success"}])
+            } else {
+                setToasts({message: response.status, intent:"danger"})
+            }
             setIsRefreshing(false);
         })
     }
 
     const TablesProps = {
-        items: [{name: "table1"}, {name: "table2"}],
+        items: availableTables.map((table) => { return {name : table} }),
         filterable: false,
         disabled: !isConnected,
+        onItemSelect: () => {return ""},
+        // eslint-disable-next-line react/display-name
         itemRenderer: (table) => {
             return(
                 <MenuItem
@@ -174,8 +189,6 @@ const Config = (props) => {
                     }}
                     />
             )
-        },
-        onItemSelect: (table) => {
         }
     }
 
@@ -198,12 +211,12 @@ const Config = (props) => {
                     <FormGroup label="Password" labelInfo="(required)" helperText="Password to use when connecting to server">
                         <InputGroup type={showPassword ? "text" : "password"} rightElement={lockButton} id="password" defaultValue={connectionData.mysql.password} intent={isFaulty.includes("password")? "warning": "none"}  onChange={handleChange} />
                     </FormGroup>
-                    <FormGroup label="Table" helperText="Select the table which should be used as data source">
+                    <FormGroup label="Table" labelInfo="(connection must be established to change)" helperText="Select the table which should be used as data source">
                         <Select {...TablesProps}>
                             <Button 
                                     disabled={!isConnected}
                                     icon="th"
-                                    text={connectionData.mysql.table.name || isConnected ? connectionData.mysql.table.name || "Select a table" : "Connection must be established at first"}          
+                                    text={connectionData.mysql.table.name || "Select a table"}          
                             />               
                         </Select>
                     </FormGroup>

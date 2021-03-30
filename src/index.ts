@@ -175,9 +175,8 @@ ipcMain.on("store", (event, arg) => {
   event.reply(arg.reqId, result);
 })
 
-ipcMain.on("service", (event, arg) => {
-  console.log(arg);
-  const result = service(arg.service, arg.method, arg.obj);
+ipcMain.on("service", async (event, arg) => {
+  const result = await service(arg.service, arg.method, arg.obj);
   event.reply(arg.reqId, result);
 })
 
