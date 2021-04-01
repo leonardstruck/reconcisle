@@ -20,7 +20,12 @@ export const StartProject = (props) => {
 		<MultistepDialog
 			title="Start a new Project"
 			{...props}
-			nextButtonProps={{ disabled: nextButtonDisabled }}
+			backButtonProps={{ minimal: true, large: true }}
+			nextButtonProps={{
+				disabled: nextButtonDisabled,
+				minimal: true,
+				large: true,
+			}}
 			onClosed={() => {
 				setProjectSettings(initialSettings);
 			}}

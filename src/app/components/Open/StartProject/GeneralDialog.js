@@ -23,7 +23,7 @@ export const GeneralDialog = (props) => {
 		const replaceSpace = e.currentTarget.value.replace(/\s+/g, "-");
 		const withoutSpace = slugify(replaceSpace, {
 			lower: true,
-			remove: /[*_+~,./()'"!:@]/g,
+			remove: /[*_+~,=?{%§$^°}.#`´;‚ç/()'"!:@]/g,
 		});
 		e.currentTarget.value = withoutSpace;
 		props.setProjectSettings({
