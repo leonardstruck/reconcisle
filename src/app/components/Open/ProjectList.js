@@ -38,11 +38,11 @@ const NoProjectsFound = () => {
 	const [startProjectState, setStartProjectState] = useState({ isOpen: false });
 
 	return (
-		<div>
-			<NonIdealState
-				title="No projects found"
-				icon="folder-new"
-				action={
+		<NonIdealState
+			title="No projects found"
+			icon="folder-new"
+			action={
+				<div>
 					<Button
 						onClick={() => {
 							setStartProjectState({ isOpen: true });
@@ -50,15 +50,15 @@ const NoProjectsFound = () => {
 					>
 						Start a new Project
 					</Button>
-				}
-			/>
-			<StartProject
-				{...startProjectState}
-				onClose={() => {
-					setStartProjectState({ isOpen: false });
-				}}
-			/>
-		</div>
+					<StartProject
+						{...startProjectState}
+						onClose={() => {
+							setStartProjectState({ isOpen: false });
+						}}
+					/>
+				</div>
+			}
+		/>
 	);
 };
 
