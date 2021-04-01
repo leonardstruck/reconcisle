@@ -1,7 +1,7 @@
 {
   "name": "reconcisle",
   "productName": "reconcisle",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "My Electron application description",
   "main": ".webpack/main",
   "typings": "./webpack/main",
@@ -23,6 +23,7 @@
     "forge": {
       "packagerConfig": {
         "icon": "./src/assets/icon/icon.icns",
+        "app-bundle-id": "com.leonardstruck.reconcisle",
         "osxSign": {
           "hardened-runtime": true,
           "gatekeeper-assess": false,

@@ -4,6 +4,7 @@ import slugify from "slugify";
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import {storeHandler}  from '../storeHandler';
+import SetReconcParams from "./SetReconcParams";
 
 import { Source } from './Source/Source';
 
@@ -82,7 +83,7 @@ export const StartProject:React.FunctionComponent<{ onClose: () => void}> = (pro
             />
             <DialogStep
                 id="reconcparams"
-                panel={<div><h1>Reconciliation Parameters</h1></div>}
+                panel={<SetReconcParams />}
                 title="Set Reconciliation Parameters"
                 />
         </MultistepDialog>
