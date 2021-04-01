@@ -1,0 +1,122 @@
+{
+	"name": "reconcisle",
+	"productName": "reconcisle",
+	"version": "0.0.4",
+	"description": "My Electron application description",
+	"main": ".webpack/main",
+	"scripts": {
+		"start": "NODE_ENV=development electron-forge start",
+		"package": "electron-forge package",
+		"make": "electron-forge make",
+		"publish": "electron-forge publish",
+		"lint": "echo \"No linting configured\""
+	},
+	"keywords": [],
+	"author": {
+		"name": "Leonard Struck",
+		"email": "info@leonardstruck.com"
+	},
+	"license": "MIT",
+	"config": {
+		"forge": {
+			"packagerConfig": {
+				"icon": "./src/app/assets/icon/icon.icns",
+				"app-bundle-id": "com.leonardstruck.reconcisle",
+				"osxSign": {
+					"hardened-runtime": true,
+					"gatekeeper-assess": false,
+					"entitlements": "entitlements.plist",
+					"entitlements-inherit": "entitlements.plist"
+				},
+				"osxNotarize": {
+					"appleID": "leonard@blockform.at",
+					"appleIDPassword": "@keychain:Application Loader: leonard@blockform.at"
+				}
+			},
+			"publisher": [
+				{
+					"name": "@electron-forge/publisher-github",
+					"config": {
+						"draft": false,
+						"repository": {
+							"owner": "leonardstruck",
+							"name": "reconcisle"
+						}
+					}
+				}
+			],
+			"makers": [
+				{
+					"name": "@electron-forge/maker-squirrel",
+					"config": {
+						"name": "reconcisle_pure"
+					}
+				},
+				{
+					"name": "@electron-forge/maker-zip",
+					"platforms": [
+						"darwin"
+					]
+				},
+				{
+					"name": "@electron-forge/maker-deb",
+					"config": {}
+				},
+				{
+					"name": "@electron-forge/maker-rpm",
+					"config": {}
+				}
+			],
+			"plugins": [
+				[
+					"@electron-forge/plugin-webpack",
+					{
+						"mainConfig": "./webpack.main.config.js",
+						"renderer": {
+							"config": "./webpack.renderer.config.js",
+							"entryPoints": [
+								{
+									"html": "./src/index.html",
+									"js": "./src/renderer.js",
+									"name": "main_window"
+								}
+							]
+						}
+					}
+				]
+			]
+		}
+	},
+	"devDependencies": {
+		"@babel/core": "^7.13.14",
+		"@babel/preset-react": "^7.13.13",
+		"@electron-forge/cli": "^6.0.0-beta.54",
+		"@electron-forge/maker-deb": "^6.0.0-beta.54",
+		"@electron-forge/maker-rpm": "^6.0.0-beta.54",
+		"@electron-forge/maker-squirrel": "^6.0.0-beta.54",
+		"@electron-forge/maker-zip": "^6.0.0-beta.54",
+		"@electron-forge/plugin-webpack": "6.0.0-beta.54",
+		"@marshallofsound/webpack-asset-relocator-loader": "^0.5.0",
+		"@svgr/webpack": "^5.5.0",
+		"babel-loader": "^8.2.2",
+		"css-loader": "^4.2.1",
+		"electron": "12.0.2",
+		"node-loader": "^1.0.1",
+		"style-loader": "^1.2.1"
+	},
+	"dependencies": {
+		"@blueprintjs/core": "^3.42.0",
+		"@blueprintjs/popover2": "^0.4.0",
+		"ajv": "^8.0.3",
+		"ajv-formats": "^2.0.1",
+		"electron-squirrel-startup": "^1.0.0",
+		"electron-store": "^7.0.2",
+		"react": "^17.0.2",
+		"react-dom": "^17.0.2",
+		"react-helmet": "^6.1.0",
+		"react-hot-loader": "^4.13.0",
+		"react-router-dom": "^5.2.0",
+		"react-uuid": "^1.0.2",
+		"webpack": "^5.28.0"
+	}
+}
