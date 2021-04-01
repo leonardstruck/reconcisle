@@ -15,7 +15,12 @@ export const Open = () => {
 			<Card elevation={Elevation.FOUR} className="centeredCard">
 				<ProjectList />
 				<Link to="/">
-					<Button icon="arrow-left" intent="primary" minimal={true}>
+					<Button
+						icon="arrow-left"
+						intent="primary"
+						large={true}
+						minimal={true}
+					>
 						Back
 					</Button>
 				</Link>

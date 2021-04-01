@@ -47,6 +47,10 @@ const NoProjectsFound = () => {
 						onClick={() => {
 							setStartProjectState({ isOpen: true });
 						}}
+						minimal={true}
+						intent="primary"
+						rightIcon="clean"
+						large={true}
 					>
 						Start a new Project
 					</Button>
