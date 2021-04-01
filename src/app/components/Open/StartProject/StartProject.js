@@ -4,20 +4,26 @@ import React, { useEffect, useState } from "react";
 //import Dialogs
 import { GeneralDialog } from "./GeneralDialog";
 import { SourceDialog } from "./SourceDialog/SourceDialog";
+import { ReconcParams } from "./ReconcParams";
 
 export const StartProject = (props) => {
 	const [nextButtonDisabled, setNextButtonDisabled] = useState(true);
-	const [projectSettings, setProjectSettings] = useState({
+	const initialSettings = {
 		general: {
 			name: "",
 			source: "database",
 		},
-	});
+		sourceConfig: {},
+	};
+	const [projectSettings, setProjectSettings] = useState(initialSettings);
 	return (
 		<MultistepDialog
 			title="Start a new Project"
 			{...props}
 			nextButtonProps={{ disabled: nextButtonDisabled }}
+			onClosed={() => {
+				setProjectSettings(initialSettings);
+			}}
 		>
 			<DialogStep
 				id="general"
@@ -37,6 +43,11 @@ export const StartProject = (props) => {
 						{...{ projectSettings, setProjectSettings, setNextButtonDisabled }}
 					/>
 				}
+			/>
+			<DialogStep
+				id="reconcParams"
+				title="Set Reconciliation Parameters"
+				panel={<h1>Reconc</h1>}
 			/>
 		</MultistepDialog>
 	);

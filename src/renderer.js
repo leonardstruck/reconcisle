@@ -26,12 +26,13 @@
  * ```
  */
 
-import './index.css';
-import './app/app';
+import "./index.css";
+import "./app/app";
 
 import "@blueprintjs/core/lib/css/blueprint.css";
 import "@blueprintjs/popover2/lib/css/blueprint-popover2.css";
-import "normalize.css/normalize.css"
+import "normalize.css/normalize.css";
 
-
-console.log('👋 This message is being logged by "renderer.js", included via webpack');
+console.log(
+	'👋 This message is being logged by "renderer.js", included via webpack'
+);

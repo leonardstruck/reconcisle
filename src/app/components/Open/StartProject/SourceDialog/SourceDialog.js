@@ -1,7 +1,7 @@
 import React from "react";
 
 //import Source views
-import { Database } from "./Database";
+import { Database } from "./Database/Database";
 
 export const SourceDialog = (props) => {
 	switch (props.projectSettings.general.source) {

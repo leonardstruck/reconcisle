@@ -55,10 +55,10 @@ body {
 }
 
 .centeredCard {
-	width: 300px;
+	width: 400px;
 	height: 450px;
 	position: absolute;
-	margin-left: -150px;
+	margin-left: -200px;
 	margin-top: -225px;
 	left: 50%;
 	top: 50%;
@@ -73,4 +73,9 @@ a:hover {
 
 .bp3-form-group {
 	margin: 15px 10px !important;
+}
+
+.bp3-multistep-dialog-right-panel {
+	max-height: 450px;
+	overflow-y: scroll;
 }
