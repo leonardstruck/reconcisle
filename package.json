@@ -1,7 +1,7 @@
 {
 	"name": "reconcisle",
 	"productName": "reconcisle",
-	"version": "0.0.4",
+	"version": "0.0.5",
 	"description": "My Electron application description",
 	"main": ".webpack/main",
 	"scripts": {
@@ -17,6 +17,10 @@
 		"name": "Leonard Struck",
 		"email": "info@leonardstruck.com"
 	},
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/leonardstruck/reconcisle.git"
+	},
 	"license": "MIT",
 	"config": {
 		"forge": {
@@ -30,8 +34,8 @@
 					"entitlements-inherit": "entitlements.plist"
 				},
 				"osxNotarize": {
-					"appleID": "leonard@blockform.at",
-					"appleIDPassword": "@keychain:Application Loader: leonard@blockform.at"
+					"appleId": "leonard@blockform.at",
+					"appleIdPassword": "@keychain:Application Loader: leonard@blockform.at"
 				}
 			},
 			"publisher": [
@@ -130,6 +134,7 @@
 		"slugify": "^1.5.0",
 		"sqlite3": "^5.0.2",
 		"tedious": "^11.0.6",
+		"update-electron-app": "^2.0.1",
 		"webpack": "^5.28.0"
 	}
 }
