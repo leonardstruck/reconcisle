@@ -1,11 +1,12 @@
 {
 	"name": "reconcisle",
-	"productName": "reconcisle",
-	"version": "0.1.2",
+	"productName": "reconcIsle",
+	"version": "0.0.3",
 	"description": "My Electron application description",
 	"main": ".webpack/main",
 	"scripts": {
-		"start": "NODE_ENV=development ELECTRON_IS_DEV=1 electron-forge start",
+		"start": "NODE_ENV=development electron-forge start",
+		"rebuild": "./node_modules/.bin/electron-rebuild -f",
 		"package": "electron-forge package",
 		"make": "electron-forge make",
 		"make-win": "electron-forge make --platform win32",
@@ -66,7 +67,11 @@
 					}
 				},
 				{
-					"name": "@electron-forge/maker-zip"
+					"name": "@electron-forge/maker-zip",
+					"platforms": [
+						"darwin",
+						"linux"
+					]
 				},
 				{
 					"name": "@electron-forge/maker-deb",
@@ -118,7 +123,7 @@
 		"electron": "12.0.2",
 		"electron-devtools-installer": "^3.1.1",
 		"electron-rebuild": "^2.3.5",
-		"node-loader": "^1.0.1",
+		"node-loader": "^1.0.2",
 		"style-loader": "^1.2.1"
 	},
 	"dependencies": {
@@ -128,10 +133,12 @@
 		"@electron-forge/maker-dmg": "^6.0.0-beta.54",
 		"ajv": "^8.0.3",
 		"ajv-formats": "^2.0.1",
-		"electron-is-dev": "^2.0.0",
+		"cardinal": "^2.1.1",
+		"electron-builder": "^22.10.5",
 		"electron-log": "^4.3.2",
 		"electron-squirrel-startup": "^1.0.0",
 		"electron-store": "^7.0.2",
+		"fs-extra": "^9.1.0",
 		"mariadb": "^2.5.3",
 		"mysql2": "^2.2.5",
 		"pg": "^8.5.1",
