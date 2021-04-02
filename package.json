@@ -1,7 +1,7 @@
 {
 	"name": "reconcisle",
 	"productName": "reconcisle",
-	"version": "0.0.5",
+	"version": "v0.0.7",
 	"description": "My Electron application description",
 	"main": ".webpack/main",
 	"scripts": {
@@ -9,22 +9,23 @@
 		"package": "electron-forge package",
 		"make": "electron-forge make",
 		"publish": "electron-forge publish",
-		"lint": "echo \"No linting configured\"",
-		"postinstall": "electron-builder install-app-deps"
+		"lint": "echo \"No linting configured\""
 	},
 	"keywords": [],
 	"author": {
 		"name": "Leonard Struck",
 		"email": "info@leonardstruck.com"
 	},
-	"repository": {
-		"type": "git",
-		"url": "https://github.com/leonardstruck/reconcisle.git"
-	},
 	"license": "MIT",
 	"config": {
 		"forge": {
 			"packagerConfig": {
+				"platform": [
+					"darwin",
+					"linux",
+					"win32"
+				],
+				"asar": true,
 				"icon": "./src/app/assets/icon/icon.icns",
 				"app-bundle-id": "com.leonardstruck.reconcisle",
 				"osxSign": {
@@ -38,7 +39,7 @@
 					"appleIdPassword": "@keychain:Application Loader: leonard@blockform.at"
 				}
 			},
-			"publisher": [
+			"publishers": [
 				{
 					"name": "@electron-forge/publisher-github",
 					"config": {
@@ -54,13 +55,21 @@
 				{
 					"name": "@electron-forge/maker-squirrel",
 					"config": {
-						"name": "reconcisle_pure"
+						"name": "reconcisle"
+					}
+				},
+				{
+					"name": "@electron-forge/maker-dmg",
+					"config": {
+						"format": "ULFO"
 					}
 				},
 				{
 					"name": "@electron-forge/maker-zip",
 					"platforms": [
-						"darwin"
+						"darwin",
+						"linux",
+						"win32"
 					]
 				},
 				{
@@ -73,6 +82,9 @@
 				}
 			],
 			"plugins": [
+				[
+					"@electron-forge/plugin-auto-unpack-natives"
+				],
 				[
 					"@electron-forge/plugin-webpack",
 					{
@@ -100,6 +112,7 @@
 		"@electron-forge/maker-rpm": "^6.0.0-beta.54",
 		"@electron-forge/maker-squirrel": "^6.0.0-beta.54",
 		"@electron-forge/maker-zip": "^6.0.0-beta.54",
+		"@electron-forge/plugin-auto-unpack-natives": "^6.0.0-beta.54",
 		"@electron-forge/plugin-webpack": "6.0.0-beta.54",
 		"@electron-forge/publisher-github": "^6.0.0-beta.54",
 		"@marshallofsound/webpack-asset-relocator-loader": "^0.5.0",
@@ -107,8 +120,8 @@
 		"babel-loader": "^8.2.2",
 		"css-loader": "^4.2.1",
 		"electron": "12.0.2",
-		"electron-builder": "^22.10.5",
 		"electron-devtools-installer": "^3.1.1",
+		"electron-rebuild": "^2.3.5",
 		"node-loader": "^1.0.1",
 		"style-loader": "^1.2.1"
 	},
@@ -116,6 +129,7 @@
 		"@blueprintjs/core": "^3.42.0",
 		"@blueprintjs/popover2": "^0.4.0",
 		"@blueprintjs/select": "^3.15.9",
+		"@electron-forge/maker-dmg": "^6.0.0-beta.54",
 		"ajv": "^8.0.3",
 		"ajv-formats": "^2.0.1",
 		"electron-is-dev": "^2.0.0",

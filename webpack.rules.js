@@ -31,11 +31,11 @@ module.exports = [
 	 * }
 	 */
 	{
-		test: /\.jsx?$/,
+		test: /\.js?$/,
 		use: {
 			loader: "babel-loader",
 			options: {
-				exclude: /node_modules/,
+				exclude: /(node_modules|.webpack)/,
 				presets: ["@babel/preset-react"],
 				plugins: ["react-hot-loader/babel"],
 			},
