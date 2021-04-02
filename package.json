@@ -1,13 +1,14 @@
 {
 	"name": "reconcisle",
 	"productName": "reconcisle",
-	"version": "v0.0.7",
+	"version": "0.1.2",
 	"description": "My Electron application description",
 	"main": ".webpack/main",
 	"scripts": {
-		"start": "NODE_ENV=development electron-forge start",
+		"start": "NODE_ENV=development ELECTRON_IS_DEV=1 electron-forge start",
 		"package": "electron-forge package",
 		"make": "electron-forge make",
+		"make-win": "electron-forge make --platform win32",
 		"publish": "electron-forge publish",
 		"lint": "echo \"No linting configured\""
 	},
@@ -16,15 +17,14 @@
 		"name": "Leonard Struck",
 		"email": "info@leonardstruck.com"
 	},
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/leonardstruck/reconcisle.git"
+	},
 	"license": "MIT",
 	"config": {
 		"forge": {
 			"packagerConfig": {
-				"platform": [
-					"darwin",
-					"linux",
-					"win32"
-				],
 				"asar": true,
 				"icon": "./src/app/assets/icon/icon.icns",
 				"app-bundle-id": "com.leonardstruck.reconcisle",
@@ -61,16 +61,12 @@
 				{
 					"name": "@electron-forge/maker-dmg",
 					"config": {
-						"format": "ULFO"
+						"format": "ULFO",
+						"icon": "./src/app/assets/icon/icon.icns"
 					}
 				},
 				{
-					"name": "@electron-forge/maker-zip",
-					"platforms": [
-						"darwin",
-						"linux",
-						"win32"
-					]
+					"name": "@electron-forge/maker-zip"
 				},
 				{
 					"name": "@electron-forge/maker-deb",
@@ -133,6 +129,7 @@
 		"ajv": "^8.0.3",
 		"ajv-formats": "^2.0.1",
 		"electron-is-dev": "^2.0.0",
+		"electron-log": "^4.3.2",
 		"electron-squirrel-startup": "^1.0.0",
 		"electron-store": "^7.0.2",
 		"mariadb": "^2.5.3",
@@ -149,7 +146,6 @@
 		"slugify": "^1.5.0",
 		"sqlite3": "^5.0.2",
 		"tedious": "^11.0.6",
-		"update-electron-app": "^2.0.1",
 		"webpack": "^5.28.0"
 	}
 }

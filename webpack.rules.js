@@ -32,10 +32,10 @@ module.exports = [
 	 */
 	{
 		test: /\.js?$/,
+		exclude: /node_modules/,
 		use: {
 			loader: "babel-loader",
 			options: {
-				exclude: /(node_modules|.webpack)/,
 				presets: ["@babel/preset-react"],
 				plugins: ["react-hot-loader/babel"],
 			},
