@@ -27,7 +27,6 @@ export const MySQL = (props) => {
 		username: "",
 		password: "",
 		table: "",
-		advanced: {},
 		status: "",
 	};
 	useEffect(() => {

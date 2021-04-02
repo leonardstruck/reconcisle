@@ -1,8 +1,8 @@
 import { Collapse, Position, Toast, Toaster } from "@blueprintjs/core";
 import React, { useEffect, useState } from "react";
 
-import { SelectSource } from "./SelectSource";
-import { SourceConfig } from "./SourceConfig/SourceConfig";
+import { SelectDriver } from "./SelectDriver";
+import { DriverConfig } from "./DriverConfig/DriverConfig";
 
 const Notifications = (props) => {
 	const toasts = props.toasts;
@@ -22,11 +22,11 @@ export const Database = (props) => {
 	return (
 		<div>
 			<Notifications toasts={toasts} setToasts={setToasts} />
-			<SelectSource {...props} />
+			<SelectDriver {...props} />
 			<Collapse
 				isOpen={props.projectSettings.sourceConfig.driver !== undefined}
 			>
-				<SourceConfig {...props} setToasts={setToasts} />
+				<DriverConfig {...props} setToasts={setToasts} />
 			</Collapse>
 		</div>
 	);
