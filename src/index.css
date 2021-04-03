@@ -76,6 +76,23 @@ a:hover {
 }
 
 .bp3-multistep-dialog-right-panel {
-	max-height: 450px;
+	min-height: 300px;
+	max-height: 80vh;
 	overflow-y: scroll;
+	padding-bottom: 60px;
+}
+
+.bp3-multistep-dialog-panels {
+	position: relative;
+}
+
+.bp3-multistep-dialog-right-panel > div:first-child {
+	position: relative;
+}
+
+.bp3-multistep-dialog-footer {
+	position: absolute;
+	bottom: 0px;
+	left: 0px;
+	right: 0px;
 }

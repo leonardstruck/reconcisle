@@ -10,6 +10,14 @@ const {
 const { service } = require("./service");
 const { fileStore } = require("./fileStore");
 const log = require("electron-log");
+const installExtensions = async () => {
+	const installer = require("electron-devtools-installer");
+	const forceDownload = !!process.env.UPGRADE_EXTENSIONS;
+	const extensions = ["REACT_DEVELOPER_TOOLS"];
+	return Promise.all(
+		extensions.map((name) => installer.default(installer[name], forceDownload))
+	).catch(log.info);
+};
 
 const isDev = process.env.NODE_ENV === "development";
 
@@ -70,15 +78,19 @@ const createWindow = () => {
 		webPreferences: {
 			nodeIntegration: true,
 			contextIsolation: false,
+			webSecurity: false,
 		},
 	});
 
 	// and load the index.html of the app.
 	mainWindow.loadURL(MAIN_WINDOW_WEBPACK_ENTRY);
-	// Open the DevTools.
+	// load dev tools
 	if (isDev) {
-		mainWindow.webContents.openDevTools();
+		mainWindow.webContents.addListener("did-frame-finish-load", () => {
+			mainWindow.webContents.openDevTools();
+		});
 	}
+	// show window gracefully
 	mainWindow.once("ready-to-show", () => {
 		mainWindow.show();
 	});
@@ -87,7 +99,15 @@ const createWindow = () => {
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
-app.on("ready", createWindow);
+app.on("ready", async () => {
+	if (isDev) {
+		await installExtensions().then(() => {
+			createWindow();
+		});
+	} else {
+		createWindow();
+	}
+});
 
 // Quit when all windows are closed, except on macOS. There, it's common
 // for applications and their menu bar to stay active until the user quits

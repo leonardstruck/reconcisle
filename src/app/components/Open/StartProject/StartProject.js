@@ -14,6 +14,10 @@ export const StartProject = (props) => {
 			source: "database",
 		},
 		sourceConfig: {},
+		reconcParams: {
+			searchColumn: "",
+			idColumn: "",
+		},
 	};
 	const [projectSettings, setProjectSettings] = useState(initialSettings);
 	return (
@@ -25,6 +29,11 @@ export const StartProject = (props) => {
 				disabled: nextButtonDisabled,
 				minimal: true,
 				large: true,
+			}}
+			finalButtonProps={{
+				minimal: true,
+				large: true,
+				disabled: nextButtonDisabled,
 			}}
 			onClosed={() => {
 				setProjectSettings(initialSettings);
@@ -52,7 +61,11 @@ export const StartProject = (props) => {
 			<DialogStep
 				id="reconcParams"
 				title="Set Reconciliation Parameters"
-				panel={<h1>Reconc</h1>}
+				panel={
+					<ReconcParams
+						{...{ projectSettings, setProjectSettings, setNextButtonDisabled }}
+					/>
+				}
 			/>
 		</MultistepDialog>
 	);
