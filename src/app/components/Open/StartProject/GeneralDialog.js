@@ -33,7 +33,7 @@ export const GeneralDialog = (props) => {
 	};
 	return (
 		<div>
-			<FormGroup label="Name" labelInfo="(required)">
+			<FormGroup label="Project name" labelInfo="(required)">
 				<InputGroup
 					id="name"
 					onChange={handleNameChange}
