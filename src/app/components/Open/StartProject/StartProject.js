@@ -1,10 +1,17 @@
-import { DialogStep, MultistepDialog } from "@blueprintjs/core";
+import {
+	DialogStep,
+	MultistepDialog,
+	Spinner,
+	NonIdealState,
+} from "@blueprintjs/core";
 import React, { useEffect, useState } from "react";
 
 //import Dialogs
 import { GeneralDialog } from "./GeneralDialog";
 import { SourceDialog } from "./SourceDialog/SourceDialog";
 import { ReconcParams } from "./ReconcParams";
+
+import { fileStoreHandler } from "../../../services/fileStoreHandler";
 
 export const StartProject = (props) => {
 	const [nextButtonDisabled, setNextButtonDisabled] = useState(true);
@@ -20,6 +27,19 @@ export const StartProject = (props) => {
 		},
 	};
 	const [projectSettings, setProjectSettings] = useState(initialSettings);
+	const [isSubmitting, setIsSubmitting] = useState(false);
+	const handleSubmit = () => {
+		setIsSubmitting(true);
+		setNextButtonDisabled(true);
+		fileStoreHandler({
+			store: "project",
+			method: "newProject",
+			obj: projectSettings,
+		}).then((response) => {
+			props.setStartProjectState({ isOpen: false });
+			setIsSubmitting(false);
+		});
+	};
 	return (
 		<MultistepDialog
 			title="Start a new Project"
@@ -34,9 +54,13 @@ export const StartProject = (props) => {
 				minimal: true,
 				large: true,
 				disabled: nextButtonDisabled,
+				onClick: handleSubmit,
 			}}
 			onClosed={() => {
 				setProjectSettings(initialSettings);
+			}}
+			onClose={() => {
+				props.setStartProjectState({ isOpen: false });
 			}}
 		>
 			<DialogStep
@@ -62,9 +86,17 @@ export const StartProject = (props) => {
 				id="reconcParams"
 				title="Set Reconciliation Parameters"
 				panel={
-					<ReconcParams
-						{...{ projectSettings, setProjectSettings, setNextButtonDisabled }}
-					/>
+					isSubmitting ? (
+						<NonIdealState icon={<Spinner />} title="Saving Project" />
+					) : (
+						<ReconcParams
+							{...{
+								projectSettings,
+								setProjectSettings,
+								setNextButtonDisabled,
+							}}
+						/>
+					)
 				}
 			/>
 		</MultistepDialog>

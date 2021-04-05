@@ -28,6 +28,8 @@ console.log = log.log;
 
 console.log(isDev ? "Running in dev-mode" : "Running in production-mode");
 
+console.log("User Data is saved in this location: ", app.getPath("userData"));
+
 //Updates
 if (!isDev) {
 	const server = "https://update-server-reconcisle.vercel.app";
@@ -223,7 +225,12 @@ Menu.setApplicationMenu(menu);
 // code. You can also put them in separate files and import them here.
 
 ipcMain.on("fileStore", (event, arg) => {
-	const result = fileStore(arg.store, arg.method, arg.obj);
+	const result = fileStore(
+		arg.store,
+		arg.method,
+		arg.obj,
+		app.getPath("userData")
+	);
 	event.reply(arg.reqId, result);
 });
 

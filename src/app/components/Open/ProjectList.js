@@ -7,16 +7,45 @@ import {
 	NonIdealState,
 	MenuItem,
 	MenuDivider,
-	FocusStyleManager,
 } from "@blueprintjs/core";
 import { Popover2 as Popover } from "@blueprintjs/popover2";
 
-FocusStyleManager.onlyShowFocusOnTabs();
-
 import { fileStoreHandler } from "../../services/fileStoreHandler";
-import { StartProject } from "./StartProject/StartProject";
 
-const SubMenu = () => {
+export const ProjectList = (props) => {
+	const [isLoading, setIsLoading] = useState(true);
+	const [projects, setProjects] = useState([]);
+
+	const handleOpenCloseStartDialog = () => {
+		props.setStartProjectState({ isOpen: !props.startProjectState.isOpen });
+	};
+
+	useEffect(() => {
+		fileStoreHandler({ store: "projects", method: "get" }).then((response) => {
+			setProjects(response);
+			setIsLoading(false);
+		});
+	});
+	if (isLoading) {
+		return <NonIdealState icon={<Spinner />} title="Reading Database" />;
+	} else if (projects.length === 0) {
+		return (
+			<NoProjectsFound
+				handleOpenCloseStartDialog={handleOpenCloseStartDialog}
+			/>
+		);
+	} else {
+		return (
+			<ListProjects
+				handleOpenCloseStartDialog={handleOpenCloseStartDialog}
+				projects={projects}
+				setProjects={setProjects}
+			/>
+		);
+	}
+};
+
+const SubMenu = (props) => {
 	return (
 		<Popover
 			content={
@@ -24,7 +53,18 @@ const SubMenu = () => {
 					<MenuItem text="Rename" icon="edit" intent="primary" />
 					<MenuItem text="Export" icon="share" intent="primary" />
 					<MenuDivider />
-					<MenuItem text="Delete" icon="trash" intent="danger" />
+					<MenuItem
+						text="Delete"
+						icon="trash"
+						intent="danger"
+						onClick={() =>
+							fileStoreHandler({
+								store: "projects",
+								method: "delete",
+								obj: { name: props.projectName },
+							})
+						}
+					/>
 				</Menu>
 			}
 			placement="right-start"
@@ -34,9 +74,45 @@ const SubMenu = () => {
 	);
 };
 
-const NoProjectsFound = () => {
-	const [startProjectState, setStartProjectState] = useState({ isOpen: false });
+const ListProjects = (props) => {
+	return (
+		<div>
+			<HTMLTable style={{ flexGrow: 1, width: "100%" }} interactive={true}>
+				<thead>
+					<tr>
+						<th>Please select a project</th>
+					</tr>
+				</thead>
+				<tbody>
+					{props.projects.map((project) => {
+						return (
+							<tr key={project.name}>
+								<td>{project.name}</td>
+								<td className="projectListActionTd">
+									<SubMenu projectName={project.name} />
+								</td>
+							</tr>
+						);
+					})}
+				</tbody>
+			</HTMLTable>
+			<Button
+				onClick={() => {
+					props.handleOpenCloseStartDialog();
+				}}
+				minimal={true}
+				intent="primary"
+				rightIcon="clean"
+				large={true}
+				fill={true}
+			>
+				Start a new Project
+			</Button>
+		</div>
+	);
+};
 
+const NoProjectsFound = (props) => {
 	return (
 		<NonIdealState
 			title="No projects found"
@@ -45,7 +121,7 @@ const NoProjectsFound = () => {
 				<div>
 					<Button
 						onClick={() => {
-							setStartProjectState({ isOpen: true });
+							props.handleOpenCloseStartDialog();
 						}}
 						minimal={true}
 						intent="primary"
@@ -54,60 +130,8 @@ const NoProjectsFound = () => {
 					>
 						Start a new Project
 					</Button>
-					<StartProject
-						{...startProjectState}
-						onClose={() => {
-							setStartProjectState({ isOpen: false });
-						}}
-					/>
 				</div>
 			}
 		/>
 	);
-};
-
-export const ProjectList = () => {
-	const [isLoading, setIsLoading] = useState(true);
-	const [projectCount, setProjectCount] = useState(0);
-	useEffect(() => {
-		fileStoreHandler({ store: "projects", method: "size" }).then((response) => {
-			setProjectCount(response);
-		});
-		setIsLoading(false);
-	});
-	if (isLoading) {
-		return <NonIdealState icon={<Spinner />} title="Reading Database" />;
-	} else if (projectCount === 0) {
-		return <NoProjectsFound />;
-	} else {
-		return (
-			<HTMLTable style={{ flexGrow: 1 }} interactive={true}>
-				<thead>
-					<tr>
-						<th>Please select a project</th>
-					</tr>
-				</thead>
-				<tbody>
-					<tr>
-						<td>Projekt 1</td>
-						<td>
-							<SubMenu />
-						</td>
-					</tr>
-					<tr>
-						<td>Projekt 2</td>
-						<td>
-							<SubMenu />
-						</td>
-					</tr>
-					<tr>
-						<td>Projekt 3</td>
-						<td>
-							<SubMenu />
-						</td>
-					</tr>
-				</tbody>
-			</HTMLTable>
-		);
-	}
 };

@@ -1,19 +1,22 @@
-import * as React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { Helmet } from "react-helmet";
 
 import { Button, Card, Elevation } from "@blueprintjs/core";
 
+import { StartProject } from "./StartProject/StartProject";
 import { ProjectList } from "./ProjectList";
 
 export const Open = () => {
+	const [startProjectState, setStartProjectState] = useState({ isOpen: false });
+
 	return (
-		<>
+		<div>
 			<Helmet>
 				<title>reconcIsle - Open</title>
 			</Helmet>
 			<Card elevation={Elevation.FOUR} className="centeredCard">
-				<ProjectList />
+				<ProjectList {...{ startProjectState, setStartProjectState }} />
 				<Link to="/">
 					<Button
 						icon="arrow-left"
@@ -25,6 +28,10 @@ export const Open = () => {
 					</Button>
 				</Link>
 			</Card>
-		</>
+			<StartProject
+				{...startProjectState}
+				setStartProjectState={setStartProjectState}
+			/>
+		</div>
 	);
 };

@@ -76,10 +76,10 @@ a:hover {
 }
 
 .bp3-multistep-dialog-right-panel {
-	min-height: 300px;
-	max-height: 80vh;
+	min-height: 240px;
+	max-height: 70vh;
 	overflow-y: scroll;
-	padding-bottom: 60px;
+	margin-bottom: 60px;
 }
 
 .bp3-multistep-dialog-panels {
@@ -95,4 +95,12 @@ a:hover {
 	bottom: 0px;
 	left: 0px;
 	right: 0px;
+}
+
+.bp3-html-table tbody td {
+	vertical-align: middle !important;
+}
+
+.projectListActionTd {
+	text-align: right !important;
 }
