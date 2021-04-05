@@ -51,7 +51,18 @@ const SubMenu = (props) => {
 			content={
 				<Menu>
 					<MenuItem text="Rename" icon="edit" intent="primary" />
-					<MenuItem text="Export" icon="share" intent="primary" />
+					<MenuItem
+						text="Export"
+						icon="share"
+						intent="primary"
+						onClick={() =>
+							fileStoreHandler({
+								store: "project",
+								method: "export",
+								obj: { name: props.projectName },
+							})
+						}
+					/>
 					<MenuDivider />
 					<MenuItem
 						text="Delete"

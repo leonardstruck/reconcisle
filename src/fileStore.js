@@ -1,3 +1,4 @@
+import { dialog } from "electron";
 import Store from "electron-store";
 import path from "path";
 import fs from "fs";
@@ -55,6 +56,23 @@ export const fileStore = (store, method, obj, userDataPath) => {
 					allProjects.push(obj.general);
 					projects.set("projects", allProjects);
 					return { status: "ok" };
+				case "export":
+					dialog
+						.showSaveDialog({
+							defaultPath: obj.name + ".risle",
+						})
+						.then((res) => {
+							const projectStore = new Store({
+								name: obj.name,
+							});
+							const stringified = JSON.stringify(projectStore.store);
+							fs.writeFile(res.filePath, stringified, (err) => {
+								if (err) throw new err();
+								return { status: "ok" };
+							});
+						});
+				default:
+					return { status: "error" };
 			}
 
 		default:
