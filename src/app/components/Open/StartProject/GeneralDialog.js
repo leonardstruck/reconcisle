@@ -6,13 +6,29 @@ import {
 	Callout,
 	Radio,
 	RadioGroup,
+	Tag,
 } from "@blueprintjs/core";
 
+import { fileStoreHandler } from "../../../services/fileStoreHandler";
+
 export const GeneralDialog = (props) => {
+	const [isDuplicate, setIsDuplicate] = useState(false);
 	useEffect(() => {
+		fileStoreHandler({
+			store: "projects",
+			method: "checkduplicate",
+			obj: props.projectSettings.general.name,
+		}).then((res) => {
+			if (res === "duplicate") {
+				setIsDuplicate(true);
+			} else {
+				setIsDuplicate(false);
+			}
+		});
 		if (
 			props.projectSettings.general.name !== "" &&
-			props.projectSettings.general.source !== ""
+			props.projectSettings.general.source !== "" &&
+			!isDuplicate
 		) {
 			props.setNextButtonDisabled(false);
 		} else {
@@ -38,6 +54,16 @@ export const GeneralDialog = (props) => {
 					id="name"
 					onChange={handleNameChange}
 					value={props.projectSettings.general.name}
+					intent={isDuplicate ? "danger" : "none"}
+					rightElement={
+						isDuplicate ? (
+							<Tag intent="danger" minimal={true}>
+								This project name is already taken
+							</Tag>
+						) : (
+							""
+						)
+					}
 				/>
 			</FormGroup>
 			<Callout title="Valid Project Names" intent="primary">

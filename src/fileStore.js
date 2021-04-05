@@ -28,6 +28,19 @@ export const fileStore = (store, method, obj, userDataPath) => {
 							projects.set("projects", projectsWithoutDeleted);
 						}
 					});
+				case "checkduplicate":
+					const storedProjects = projects.get("projects");
+					if (storedProjects.length === 0) {
+						return "ok";
+					}
+					const duplicates = storedProjects.filter(
+						(project) => project.name === obj
+					);
+					if (duplicates.length === 0) {
+						return "ok";
+					} else {
+						return "duplicate";
+					}
 			}
 			break;
 
