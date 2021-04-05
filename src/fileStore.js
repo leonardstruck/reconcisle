@@ -62,14 +62,19 @@ export const fileStore = (store, method, obj, userDataPath) => {
 							defaultPath: obj.name + ".risle",
 						})
 						.then((res) => {
-							const projectStore = new Store({
-								name: obj.name,
-							});
-							const stringified = JSON.stringify(projectStore.store);
-							fs.writeFile(res.filePath, stringified, (err) => {
-								if (err) throw new err();
-								return { status: "ok" };
-							});
+							if (res.filePath) {
+								const projectStore = new Store({
+									name: obj.name,
+								});
+								const stringified = JSON.stringify(projectStore.store);
+								fs.writeFile(res.filePath, stringified, (err) => {
+									if (err) throw new err();
+									return { status: "ok" };
+								});
+							} else {
+								console.log("Export canceled");
+								return { status: "canceled" };
+							}
 						});
 				default:
 					return { status: "error" };
