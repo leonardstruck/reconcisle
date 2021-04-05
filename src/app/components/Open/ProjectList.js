@@ -87,11 +87,11 @@ const SubMenu = (props) => {
 
 const ListProjects = (props) => {
 	return (
-		<div>
+		<div className="projectList">
 			<HTMLTable style={{ flexGrow: 1, width: "100%" }} interactive={true}>
 				<thead>
 					<tr>
-						<th>Please select a project</th>
+						<th>Select a project</th>
 					</tr>
 				</thead>
 				<tbody>
@@ -112,7 +112,7 @@ const ListProjects = (props) => {
 					props.handleOpenCloseStartDialog();
 				}}
 				minimal={true}
-				intent="primary"
+				intent="success"
 				rightIcon="clean"
 				large={true}
 				fill={true}
