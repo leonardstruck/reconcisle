@@ -9,6 +9,8 @@ const {
 } = require("electron");
 const { service } = require("./service");
 const { fileStore } = require("./fileStore");
+const Config = require("electron-config");
+const config = new Config();
 const log = require("electron-log");
 const installExtensions = async () => {
 	const installer = require("electron-devtools-installer");
@@ -70,7 +72,7 @@ if (require("electron-squirrel-startup")) {
 
 const createWindow = () => {
 	// Create the browser window.
-	const mainWindow = new BrowserWindow({
+	const windowConfig = {
 		width: 900,
 		height: 800,
 		show: false,
@@ -80,7 +82,11 @@ const createWindow = () => {
 			contextIsolation: false,
 			webSecurity: false,
 		},
-	});
+	};
+
+	Object.assign(windowConfig, config.get("winBounds"));
+
+	const mainWindow = new BrowserWindow(windowConfig);
 
 	// and load the index.html of the app.
 	mainWindow.loadURL(MAIN_WINDOW_WEBPACK_ENTRY);
@@ -93,6 +99,10 @@ const createWindow = () => {
 	// show window gracefully
 	mainWindow.once("ready-to-show", () => {
 		mainWindow.show();
+	});
+
+	mainWindow.on("close", () => {
+		config.set("winBounds", mainWindow.getBounds());
 	});
 };
 

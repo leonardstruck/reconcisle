@@ -136,6 +136,7 @@
 		"ajv-formats": "^2.0.1",
 		"cardinal": "^2.1.1",
 		"electron-builder": "^22.10.5",
+		"electron-config": "^2.0.0",
 		"electron-log": "^4.3.2",
 		"electron-squirrel-startup": "^1.0.0",
 		"electron-store": "^7.0.2",
