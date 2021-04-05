@@ -108,6 +108,37 @@ const createWindow = () => {
 	});
 };
 
+const createProjectWindow = (windowToClose) => {
+	const windowConfig = {
+		width: 200,
+		height: 300,
+		resizable: false,
+		show: false,
+		backgroundColor: "#5C747A",
+		webPreferences: {
+			nodeIntegration: true,
+			contextIsolation: false,
+			webSecurity: false,
+		},
+	};
+
+	const projectWindow = new BrowserWindow(windowConfig);
+
+	projectWindow.loadURL(RECONC_WEBPACK_ENTRY);
+	if (isDev) {
+		projectWindow.webContents.addListener("did-frame-finish-load", () => {
+			projectWindow.webContents.openDevTools();
+		});
+	}
+	projectWindow.once("ready-to-show", () => {
+		projectWindow.show();
+		windowToClose.close();
+	});
+	projectWindow.on("close", () => {
+		createWindow();
+	});
+};
+
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
@@ -237,4 +268,9 @@ ipcMain.on("fileStore", (event, arg) => {
 ipcMain.on("service", async (event, arg) => {
 	const result = await service(arg.service, arg.method, arg.obj);
 	event.reply(arg.reqId, result);
+});
+
+ipcMain.on("open", (event, arg) => {
+	const WindowToClose = BrowserWindow.getFocusedWindow();
+	createProjectWindow(WindowToClose);
 });

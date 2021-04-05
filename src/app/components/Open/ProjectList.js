@@ -7,8 +7,10 @@ import {
 	NonIdealState,
 	MenuItem,
 	MenuDivider,
+	Alert,
 } from "@blueprintjs/core";
 import { Popover2 as Popover } from "@blueprintjs/popover2";
+import { ipcRenderer } from "electron";
 
 import { fileStoreHandler } from "../../services/fileStoreHandler";
 
@@ -18,6 +20,10 @@ export const ProjectList = (props) => {
 
 	const handleOpenCloseStartDialog = () => {
 		props.setStartProjectState({ isOpen: !props.startProjectState.isOpen });
+	};
+
+	const handleOpenProject = (name, e) => {
+		ipcRenderer.send("open", name);
 	};
 
 	useEffect(() => {
@@ -38,6 +44,7 @@ export const ProjectList = (props) => {
 		return (
 			<ListProjects
 				handleOpenCloseStartDialog={handleOpenCloseStartDialog}
+				handleOpenProject={handleOpenProject}
 				projects={projects}
 				setProjects={setProjects}
 			/>
@@ -98,7 +105,9 @@ const ListProjects = (props) => {
 					{props.projects.map((project) => {
 						return (
 							<tr key={project.name}>
-								<td>{project.name}</td>
+								<td onClick={(e) => props.handleOpenProject(project.name, e)}>
+									{project.name}
+								</td>
 								<td className="projectListActionTd">
 									<SubMenu projectName={project.name} />
 								</td>
