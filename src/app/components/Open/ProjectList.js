@@ -7,10 +7,10 @@ import {
 	NonIdealState,
 	MenuItem,
 	MenuDivider,
-	Alert,
 } from "@blueprintjs/core";
 import { Popover2 as Popover } from "@blueprintjs/popover2";
 import { fileStoreHandler } from "../../services/fileStoreHandler";
+import { useHistory } from "react-router";
 
 export const ProjectList = (props) => {
 	const [isLoading, setIsLoading] = useState(true);
@@ -19,8 +19,6 @@ export const ProjectList = (props) => {
 	const handleOpenCloseStartDialog = () => {
 		props.setStartProjectState({ isOpen: !props.startProjectState.isOpen });
 	};
-
-	const handleOpenProject = (name, e) => {};
 
 	useEffect(() => {
 		fileStoreHandler({ store: "projects", method: "get" }).then((response) => {
@@ -40,7 +38,6 @@ export const ProjectList = (props) => {
 		return (
 			<ListProjects
 				handleOpenCloseStartDialog={handleOpenCloseStartDialog}
-				handleOpenProject={handleOpenProject}
 				projects={projects}
 				setProjects={setProjects}
 			/>
@@ -89,6 +86,8 @@ const SubMenu = (props) => {
 };
 
 const ListProjects = (props) => {
+	const history = useHistory();
+
 	return (
 		<div className="projectList">
 			<HTMLTable style={{ flexGrow: 1, width: "100%" }} interactive={true}>
@@ -101,7 +100,9 @@ const ListProjects = (props) => {
 					{props.projects.map((project) => {
 						return (
 							<tr key={project.name}>
-								<td onClick={(e) => props.handleOpenProject(project.name, e)}>
+								<td
+									onClick={() => history.push("/project?name=" + project.name)}
+								>
 									{project.name}
 								</td>
 								<td className="projectListActionTd">

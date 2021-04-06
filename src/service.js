@@ -23,6 +23,22 @@ export const service = async (service, method, obj) => {
 						},
 					});
 					switch (method) {
+						case "getData":
+							try {
+								let data;
+								await sequelize.authenticate();
+								console.log("Connection was established successfully");
+								await sequelize
+									.query("SELECT * FROM " + obj.table, {
+										type: QueryTypes.SELECT,
+									})
+									.then((result) => {
+										data = result;
+									});
+								return returnC({ status: "ok", data: data });
+							} catch (error) {
+								return returnC({ status: "error" + error });
+							}
 						case "getTables":
 							try {
 								let tables;

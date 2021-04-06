@@ -5,6 +5,7 @@ import { MemoryRouter as Router, Switch, Route } from "react-router-dom";
 
 import { Home } from "./components/Home";
 import { Open } from "./components/Open/Open";
+import { Reconc } from "./components/Reconc/Reconc";
 
 export const App = () => {
 	return (
@@ -12,6 +13,9 @@ export const App = () => {
 			<Switch>
 				<Route path="/open">
 					<Open />
+				</Route>
+				<Route path="/project">
+					<Reconc />
 				</Route>
 				<Route path="/">
 					<Home />
