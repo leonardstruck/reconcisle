@@ -269,8 +269,3 @@ ipcMain.on("service", async (event, arg) => {
 	const result = await service(arg.service, arg.method, arg.obj);
 	event.reply(arg.reqId, result);
 });
-
-ipcMain.on("open", (event, arg) => {
-	const WindowToClose = BrowserWindow.getFocusedWindow();
-	createProjectWindow(WindowToClose);
-});

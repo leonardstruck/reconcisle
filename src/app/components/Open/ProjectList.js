@@ -10,8 +10,6 @@ import {
 	Alert,
 } from "@blueprintjs/core";
 import { Popover2 as Popover } from "@blueprintjs/popover2";
-import { ipcRenderer } from "electron";
-
 import { fileStoreHandler } from "../../services/fileStoreHandler";
 
 export const ProjectList = (props) => {
@@ -22,9 +20,7 @@ export const ProjectList = (props) => {
 		props.setStartProjectState({ isOpen: !props.startProjectState.isOpen });
 	};
 
-	const handleOpenProject = (name, e) => {
-		ipcRenderer.send("open", name);
-	};
+	const handleOpenProject = (name, e) => {};
 
 	useEffect(() => {
 		fileStoreHandler({ store: "projects", method: "get" }).then((response) => {

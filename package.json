@@ -1,7 +1,7 @@
 {
 	"name": "reconcisle",
 	"productName": "reconcIsle",
-	"version": "0.0.3",
+	"version": "0.0.4",
 	"description": "My Electron application description",
 	"main": ".webpack/main",
 	"scripts": {
@@ -93,11 +93,6 @@
 						"renderer": {
 							"config": "./webpack.renderer.config.js",
 							"entryPoints": [
-								{
-									"html": "./src/reconc/index.html",
-									"js": "./src/reconc/renderer.js",
-									"name": "reconc"
-								},
 								{
 									"html": "./src/index.html",
 									"js": "./src/renderer.js",

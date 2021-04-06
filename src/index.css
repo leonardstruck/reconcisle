@@ -11,6 +11,7 @@ body {
 	overflow: hidden;
 }
 
+/*
 body {
 	background: linear-gradient(-45deg, #f2c8ad, #cc8e6d, #5c747a);
 	background-size: 600% 600%;
@@ -48,6 +49,7 @@ body {
 		-o-transform: scale(1);
 	}
 }
+*/
 
 #App {
 	height: 100%;
