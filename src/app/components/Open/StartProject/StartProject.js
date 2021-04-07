@@ -6,15 +6,21 @@ import {
 } from "@blueprintjs/core";
 import React, { useEffect, useState } from "react";
 
+import modules from "../../../../modules/modules";
+const Modules = modules();
+
 //import Dialogs
 import { GeneralDialog } from "./GeneralDialog";
-import { SourceDialog } from "./SourceDialog/SourceDialog";
 import { ReconcParams } from "./ReconcParams";
 
 import { fileStoreHandler } from "../../../services/fileStoreHandler";
 
+import { useSelector, useDispatch } from "react-redux";
+const selectStartProjectState = (state) => state.startProject;
+
 export const StartProject = (props) => {
-	const [nextButtonDisabled, setNextButtonDisabled] = useState(true);
+	const dispatch = useDispatch();
+	const state = useSelector(selectStartProjectState);
 	const initialSettings = {
 		general: {
 			name: "",
@@ -30,7 +36,6 @@ export const StartProject = (props) => {
 	const [isSubmitting, setIsSubmitting] = useState(false);
 	const handleSubmit = () => {
 		setIsSubmitting(true);
-		setNextButtonDisabled(true);
 		fileStoreHandler({
 			store: "project",
 			method: "newProject",
@@ -40,47 +45,42 @@ export const StartProject = (props) => {
 			setIsSubmitting(false);
 		});
 	};
+
+	const SourceConfig =
+		state.sourceModule !== ""
+			? Modules.getConfigView(state.sourceModule)
+			: () => {
+					return <h1>Loading Source Module</h1>;
+			  };
+
 	return (
 		<MultistepDialog
 			title="Start a new Project"
 			{...props}
 			backButtonProps={{ minimal: true, large: true }}
 			nextButtonProps={{
-				disabled: nextButtonDisabled,
+				disabled: state.nextButtonDisabled,
 				minimal: true,
 				large: true,
 			}}
 			finalButtonProps={{
 				minimal: true,
 				large: true,
-				disabled: nextButtonDisabled,
+				disabled: state.nextButtonDisabled,
 				onClick: handleSubmit,
 			}}
 			onClosed={() => {
-				setProjectSettings(initialSettings);
+				dispatch({ type: "Component/StartProject/RESET_FORM_STATE" });
 			}}
 			onClose={() => {
 				props.setStartProjectState({ isOpen: false });
 			}}
 		>
-			<DialogStep
-				id="general"
-				title="General"
-				panel={
-					<GeneralDialog
-						{...{ projectSettings, setProjectSettings, setNextButtonDisabled }}
-					/>
-				}
-				setNextButtonDisabled
-			/>
+			<DialogStep id="general" title="General" panel={<GeneralDialog />} />
 			<DialogStep
 				id="sourceDialog"
 				title="Configure Source"
-				panel={
-					<SourceDialog
-						{...{ projectSettings, setProjectSettings, setNextButtonDisabled }}
-					/>
-				}
+				panel={<SourceConfig />}
 			/>
 			<DialogStep
 				id="reconcParams"
@@ -89,13 +89,7 @@ export const StartProject = (props) => {
 					isSubmitting ? (
 						<NonIdealState icon={<Spinner />} title="Saving Project" />
 					) : (
-						<ReconcParams
-							{...{
-								projectSettings,
-								setProjectSettings,
-								setNextButtonDisabled,
-							}}
-						/>
+						<ReconcParams />
 					)
 				}
 			/>

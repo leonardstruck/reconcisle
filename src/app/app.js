@@ -7,6 +7,13 @@ import { Home } from "./components/Home";
 import { Open } from "./components/Open/Open";
 import { Reconc } from "./components/Reconc/Reconc";
 
+//REDUX STORE
+import { createStore } from "redux";
+import { composeWithDevTools } from "electron-redux-devtools";
+import allReducers from "./reducers/index";
+let store = createStore(allReducers, composeWithDevTools());
+import { Provider } from "react-redux";
+
 export const App = () => {
 	return (
 		<Router>
@@ -27,4 +34,9 @@ export const App = () => {
 
 export default hot(module)(App);
 
-ReactDOM.render(<App />, document.getElementById("App"));
+ReactDOM.render(
+	<Provider store={store}>
+		<App />
+	</Provider>,
+	document.getElementById("App")
+);
