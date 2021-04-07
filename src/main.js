@@ -2,6 +2,7 @@ const {
 	app,
 	BrowserWindow,
 	ipcMain,
+	session,
 	Notification,
 	Menu,
 	autoUpdater,
@@ -12,13 +13,27 @@ const { fileStore } = require("./fileStore");
 const Config = require("electron-config");
 const config = new Config();
 const log = require("electron-log");
+const os = require("os");
+const path = require("path");
+
+// install Extensions
+const ReactDevTools = path.join(
+	os.homedir(),
+	"/Library/Application Support/Google/Chrome/Default/Extensions/fmkadmapgofadopljbjfkapdkoienihi/4.10.1_0"
+);
+const ReduxDevTools = path.join(
+	os.homedir(),
+	"/Library/Application Support/Google/Chrome/Default/Extensions/lmhkpmbekcpmknklioeibfkpmmfibljd/2.17.0_0"
+);
 const installExtensions = async () => {
-	const installer = require("electron-devtools-installer");
-	const forceDownload = !!process.env.UPGRADE_EXTENSIONS;
-	const extensions = ["REACT_DEVELOPER_TOOLS"];
-	return Promise.all(
-		extensions.map((name) => installer.default(installer[name], forceDownload))
-	).catch(log.info);
+	return Promise.all([
+		session.defaultSession.loadExtension(ReactDevTools, {
+			allowFileAccess: true,
+		}),
+		session.defaultSession.loadExtension(ReduxDevTools, {
+			allowFileAccess: true,
+		}),
+	]);
 };
 
 const isDev = process.env.NODE_ENV === "development";
@@ -171,6 +186,44 @@ app.on("activate", () => {
 
 //Menu
 const template = [
+	{
+		label: "Edit",
+		submenu: [
+			{
+				label: "Undo",
+				accelerator: "CmdOrCtrl+Z",
+				role: "undo",
+			},
+			{
+				label: "Redo",
+				accelerator: "Shift+CmdOrCtrl+Z",
+				role: "redo",
+			},
+			{
+				type: "separator",
+			},
+			{
+				label: "Cut",
+				accelerator: "CmdOrCtrl+X",
+				role: "cut",
+			},
+			{
+				label: "Copy",
+				accelerator: "CmdOrCtrl+C",
+				role: "copy",
+			},
+			{
+				label: "Paste",
+				accelerator: "CmdOrCtrl+V",
+				role: "paste",
+			},
+			{
+				label: "Select All",
+				accelerator: "CmdOrCtrl+A",
+				role: "selectall",
+			},
+		],
+	},
 	{
 		label: "Help",
 		submenu: [

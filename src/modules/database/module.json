@@ -1,0 +1,6 @@
+{
+	"name": "Database",
+	"uuid": "26a1f03f-10ed-4a01-8927-c1a4d7e882fd",
+	"description": "Postgres, MySQL, MariaDB, SQLite, Microsoft SQL Server",
+	"canUpdate": true
+}

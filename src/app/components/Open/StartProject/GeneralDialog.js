@@ -10,14 +10,20 @@ import {
 } from "@blueprintjs/core";
 
 import { fileStoreHandler } from "../../../services/fileStoreHandler";
+import { ListSourceModules } from "./ListSourceModules";
+
+import { useSelector, useDispatch } from "react-redux";
+const selectStartProjectState = (state) => state.startProject;
 
 export const GeneralDialog = (props) => {
+	const dispatch = useDispatch();
+	const state = useSelector(selectStartProjectState);
 	const [isDuplicate, setIsDuplicate] = useState(false);
 	useEffect(() => {
 		fileStoreHandler({
 			store: "projects",
 			method: "checkduplicate",
-			obj: props.projectSettings.general.name,
+			obj: state.name,
 		}).then((res) => {
 			if (res === "duplicate") {
 				setIsDuplicate(true);
@@ -25,16 +31,12 @@ export const GeneralDialog = (props) => {
 				setIsDuplicate(false);
 			}
 		});
-		if (
-			props.projectSettings.general.name !== "" &&
-			props.projectSettings.general.source !== "" &&
-			!isDuplicate
-		) {
-			props.setNextButtonDisabled(false);
+		if (state.name !== "" && state.sourceModule !== "" && !isDuplicate) {
+			dispatch({ type: "Component/StartProject/ENABLE_NEXT_BUTTON" });
 		} else {
-			props.setNextButtonDisabled(true);
+			dispatch({ type: "Component/StartProject/DISABLE_NEXT_BUTTON" });
 		}
-	});
+	}, [state.name, state.sourceModule, isDuplicate]);
 	const handleNameChange = (e) => {
 		const replaceSpace = e.currentTarget.value.replace(/\s+/g, "-");
 		const withoutSpace = slugify(replaceSpace, {
@@ -42,9 +44,9 @@ export const GeneralDialog = (props) => {
 			remove: /[*_+~,=?{%§$^°}.#`´;‚ç/()'"!:@]/g,
 		});
 		e.currentTarget.value = withoutSpace;
-		props.setProjectSettings({
-			...props.projectSettings,
-			general: { ...props.projectSettings.general, name: withoutSpace },
+		dispatch({
+			type: "Component/StartProject/CHANGE_NAME",
+			name: withoutSpace,
 		});
 	};
 	return (
@@ -53,7 +55,7 @@ export const GeneralDialog = (props) => {
 				<InputGroup
 					id="name"
 					onChange={handleNameChange}
-					value={props.projectSettings.general.name}
+					value={state.name}
 					intent={isDuplicate ? "danger" : "none"}
 					rightElement={
 						isDuplicate ? (
@@ -70,27 +72,7 @@ export const GeneralDialog = (props) => {
 				Supported characters for a project name are: letters, numbers and
 				dashes. Dashes must not be entered next to another.
 			</Callout>
-			<FormGroup label="Source">
-				<RadioGroup
-					selectedValue={props.projectSettings.general.source}
-					onChange={(e) => {
-						props.setProjectSettings({
-							...props.projectSettings,
-							general: {
-								...props.projectSettings.general,
-								source: e.currentTarget.value,
-							},
-						});
-					}}
-				>
-					<Radio
-						label="Postgres, MySQL, MariaDB, SQLite, Microsoft SQL Server"
-						value="database"
-					/>
-					<Radio label="CSV (coming soon...)" value="csv" disabled={true} />
-					<Radio label="Excel (coming soon...)" value="excel" disabled={true} />
-				</RadioGroup>
-			</FormGroup>
+			<ListSourceModules />
 		</div>
 	);
 };
