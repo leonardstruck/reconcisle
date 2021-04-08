@@ -14,6 +14,8 @@ import { GeneralDialog } from "./GeneralDialog";
 import { ReconcParams } from "./ReconcParams";
 
 import { fileStoreHandler } from "../../../services/fileStoreHandler";
+import { serviceHandler } from "../../../services/serviceHandler";
+import { Notifications } from "../../../services/Notifications";
 
 import { useSelector, useDispatch } from "react-redux";
 const selectStartProjectState = (state) => state.startProject;
@@ -21,28 +23,36 @@ const selectStartProjectState = (state) => state.startProject;
 export const StartProject = (props) => {
 	const dispatch = useDispatch();
 	const state = useSelector(selectStartProjectState);
-	const initialSettings = {
-		general: {
-			name: "",
-			source: "database",
-		},
-		sourceConfig: {},
-		reconcParams: {
-			searchColumn: "",
-			idColumn: "",
-		},
-	};
-	const [projectSettings, setProjectSettings] = useState(initialSettings);
 	const [isSubmitting, setIsSubmitting] = useState(false);
 	const handleSubmit = () => {
 		setIsSubmitting(true);
 		fileStoreHandler({
 			store: "project",
 			method: "newProject",
-			obj: projectSettings,
+			obj: {
+				general: { name: state.name, sourceModule: state.sourceModule },
+				sourceConfig: state.sourceConfig,
+			},
 		}).then((response) => {
-			props.setStartProjectState({ isOpen: false });
-			setIsSubmitting(false);
+			serviceHandler(state.sourceModule, "getData", state.sourceConfig).then(
+				(res) => {
+					fileStoreHandler({
+						store: "project",
+						method: "saveData",
+						obj: {
+							name: state.name,
+							data: res.data,
+						},
+					}).then((res) => {
+						if (res.status === "ok") {
+							props.setStartProjectState({ isOpen: false });
+							setIsSubmitting(false);
+						} else {
+							throw new Error("Something didn't work");
+						}
+					});
+				}
+			);
 		});
 	};
 
@@ -54,45 +64,48 @@ export const StartProject = (props) => {
 			  };
 
 	return (
-		<MultistepDialog
-			title="Start a new Project"
-			{...props}
-			backButtonProps={{ minimal: true, large: true }}
-			nextButtonProps={{
-				disabled: state.nextButtonDisabled,
-				minimal: true,
-				large: true,
-			}}
-			finalButtonProps={{
-				minimal: true,
-				large: true,
-				disabled: state.nextButtonDisabled,
-				onClick: handleSubmit,
-			}}
-			onClosed={() => {
-				dispatch({ type: "Component/StartProject/RESET_FORM_STATE" });
-			}}
-			onClose={() => {
-				props.setStartProjectState({ isOpen: false });
-			}}
-		>
-			<DialogStep id="general" title="General" panel={<GeneralDialog />} />
-			<DialogStep
-				id="sourceDialog"
-				title="Configure Source"
-				panel={<SourceConfig />}
-			/>
-			<DialogStep
-				id="reconcParams"
-				title="Set Reconciliation Parameters"
-				panel={
-					isSubmitting ? (
-						<NonIdealState icon={<Spinner />} title="Saving Project" />
-					) : (
-						<ReconcParams />
-					)
-				}
-			/>
-		</MultistepDialog>
+		<div>
+			<Notifications />
+			<MultistepDialog
+				title="Start a new Project"
+				{...props}
+				backButtonProps={{ minimal: true, large: true }}
+				nextButtonProps={{
+					disabled: state.nextButtonDisabled,
+					minimal: true,
+					large: true,
+				}}
+				finalButtonProps={{
+					minimal: true,
+					large: true,
+					disabled: state.nextButtonDisabled,
+					onClick: handleSubmit,
+				}}
+				onClosed={() => {
+					dispatch({ type: "Component/StartProject/RESET_FORM_STATE" });
+				}}
+				onClose={() => {
+					props.setStartProjectState({ isOpen: false });
+				}}
+			>
+				<DialogStep id="general" title="General" panel={<GeneralDialog />} />
+				<DialogStep
+					id="sourceDialog"
+					title="Configure Source"
+					panel={<SourceConfig />}
+				/>
+				<DialogStep
+					id="reconcParams"
+					title="Set Reconciliation Parameters"
+					panel={
+						isSubmitting ? (
+							<NonIdealState icon={<Spinner />} title="Saving Project" />
+						) : (
+							<ReconcParams />
+						)
+					}
+				/>
+			</MultistepDialog>
+		</div>
 	);
 };

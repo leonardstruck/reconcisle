@@ -16,7 +16,7 @@ export const ListSourceModules = () => {
 				onChange={(e) => {
 					dispatch({
 						type: "Component/StartProject/CHANGE_SOURCE_MODULE",
-						sourceModule: e.currentTarget.value,
+						payload: e.currentTarget.value,
 					});
 				}}
 			>

@@ -1,88 +1,74 @@
 import React, { useEffect, useState } from "react";
 import { serviceHandler } from "../../../services/serviceHandler";
+
+import { useSelector, useDispatch } from "react-redux";
 import {
 	Callout,
+	Colors,
 	Menu,
 	MenuItem,
-	Icon,
 	NonIdealState,
+	Icon,
 	Spinner,
-	Colors,
-	ButtonGroup,
+	InputGroup,
+	Classes,
+	FormGroup,
+	ControlGroup,
 	Button,
-	AnchorButton,
+	ButtonGroup,
 } from "@blueprintjs/core";
+const selectStartProjectState = (state) => state.startProject;
+
+import { NotificationObject } from "../../../services/Notifications";
 import {
-	Table,
-	Column,
 	Cell,
-	SelectionModes,
+	Column,
 	ColumnHeaderCell,
+	RegionCardinality,
+	SelectionModes,
+	Table,
 } from "@blueprintjs/table";
-import { Popover2 } from "@blueprintjs/popover2";
+import { Tooltip2 } from "@blueprintjs/popover2";
+import { Select } from "@blueprintjs/select";
 
 export const ReconcParams = (props) => {
-	useEffect(() => {
-		if (
-			props.projectSettings.reconcParams.searchColumn !== "" &&
-			props.projectSettings.reconcParams.idColumn !== ""
-		) {
-			props.setNextButtonDisabled(false);
-		} else {
-			props.setNextButtonDisabled(true);
-		}
-	});
+	const dispatch = useDispatch();
+	const state = useSelector(selectStartProjectState);
+	const [tableContent, setTableContent] = useState([]);
 	const [isLoading, setIsLoading] = useState(true);
-	const [tableContent, setTableContent] = useState();
-	const [selectIsActive, setSelectIsActive] = useState(false);
-	const [selectSearchColumnIsActive, setSelectSearchColumnIsActive] = useState(
-		false
-	);
-	const [selectIdColumnIsActive, setSelectIdColumnIsActive] = useState(false);
-
-	const handlePreviewTable = () => {
-		setIsLoading(true);
-		const sendObj = { ...props.projectSettings.sourceConfig };
-		serviceHandler({
-			service: props.projectSettings.general.source,
-			method: "previewTable",
-			obj: sendObj,
-		}).then((response) => {
-			console.log(response);
-			setTableContent(response.tableContent);
-			setIsLoading(false);
-		});
-	};
-
-	const handleColumnClick = (columnname) => {
-		if (selectIsActive) {
-			if (selectSearchColumnIsActive) {
-				props.setProjectSettings({
-					...props.projectSettings,
-					reconcParams: {
-						...props.projectSettings.reconcParams,
-						searchColumn: columnname,
-					},
-				});
-			} else if (selectIdColumnIsActive) {
-				props.setProjectSettings({
-					...props.projectSettings,
-					reconcParams: {
-						...props.projectSettings.reconcParams,
-						idColumn: columnname,
-					},
-				});
-			}
-			setSelectIdColumnIsActive(false);
-			setSelectSearchColumnIsActive(false);
-			setSelectIsActive(false);
-		} else {
-			console.log("not active");
+	const [configurationError, setConfigurationError] = useState(false);
+	const returnAvailableColumns = () => {
+		const keyArray = [];
+		for (let key in tableContent[0]) {
+			keyArray.push(key);
 		}
+		return keyArray;
 	};
+
+	const availableColumns = returnAvailableColumns();
 
 	useEffect(() => {
-		handlePreviewTable();
+		if (state.reconcParams.searchColumn && state.reconcParams.idColumn) {
+			dispatch({ type: "Component/StartProject/ENABLE_NEXT_BUTTON" });
+		} else {
+			dispatch({ type: "Component/StartProject/DISABLE_NEXT_BUTTON" });
+		}
+	}, [state.reconcParams]);
+
+	useEffect(() => {
+		serviceHandler(state.sourceModule, "previewTable", state.sourceConfig).then(
+			(response) => {
+				console.log("This is the serviceHandler response ", response);
+				if (response.status === "ok") {
+					setTableContent(response.tableContent);
+					setIsLoading(false);
+				} else {
+					setIsLoading(false);
+					setConfigurationError(true);
+					dispatch(NotificationObject(response.errorMessage, "danger"));
+				}
+			}
+		);
 	}, []);
 
 	const PreviewTable = () => {
@@ -93,21 +79,10 @@ export const ReconcParams = (props) => {
 			}
 			return (
 				<Cell>
-					<div
-						style={{ width: "100%", height: "100%" }}
-						onClick={() => handleColumnClick(keyArray[column])}
-					>
+					<div style={{ width: "100%", height: "100%" }}>
 						{tableContent[row][keyArray[column]]}
 					</div>
 				</Cell>
-			);
-		};
-
-		const renderCellHeaderMenu = (column) => {
-			return (
-				<Menu>
-					<MenuItem text="Use as Search Column" />
-				</Menu>
 			);
 		};
 
@@ -117,12 +92,13 @@ export const ReconcParams = (props) => {
 				keyArray.push(key);
 			}
 			const getIcon = (key) => {
-				if (key == props.projectSettings.reconcParams.searchColumn) {
+				if (key == state.reconcParams.searchColumn) {
 					return "search";
-				} else if (key == props.projectSettings.reconcParams.idColumn) {
+				} else if (key == state.reconcParams.idColumn) {
 					return "tag";
 				}
 			};
+
 			return (
 				<ColumnHeaderCell>
 					<div
@@ -133,9 +109,6 @@ export const ReconcParams = (props) => {
 							justifyContent: "space-between",
 							alignItems: "center",
 						}}
-						onClick={() => {
-							handleColumnClick(keyArray[column]);
-						}}
 					>
 						{keyArray[column]}
 						<Icon icon={getIcon(keyArray[column])} />
@@ -143,16 +116,14 @@ export const ReconcParams = (props) => {
 				</ColumnHeaderCell>
 			);
 		};
+
 		const renderColumns = () => {
 			const keyArray = [];
 			for (let key in tableContent[0]) {
 				keyArray.push(key);
 			}
-			const isBlue = (key) =>
-				props.projectSettings.reconcParams.searchColumn === key;
-
-			const isOrange = (key) =>
-				props.projectSettings.reconcParams.idColumn === key;
+			const isBlue = (key) => state.reconcParams.searchColumn === key;
+			const isOrange = (key) => state.reconcParams.idColumn === key;
 
 			return keyArray.map((key) => (
 				<Column
@@ -169,6 +140,7 @@ export const ReconcParams = (props) => {
 				/>
 			));
 		};
+
 		return (
 			<Table
 				enableRowResizing={false}
@@ -182,23 +154,15 @@ export const ReconcParams = (props) => {
 		);
 	};
 
-	const handleSelectButton = (type) => {
-		setSelectIsActive(true);
-		if (type === "searchColumn") {
-			setSelectSearchColumnIsActive(true);
-		} else if (type === "idColumn") {
-			setSelectIdColumnIsActive(true);
-		}
-	};
-
-	if (props.projectSettings.sourceConfig.status !== "ok") {
+	if (isLoading) {
+		return <NonIdealState icon={<Spinner />} title="Requesting Data" />;
+	} else if (configurationError) {
 		return (
 			<Callout intent="danger" title="Source Configuration Error">
-				Something went wrong while loading your source configuration.
+				Something went wrong while loading your source configuration. Please
+				head one step back and try again.
 			</Callout>
 		);
-	} else if (isLoading) {
-		return <NonIdealState icon={<Spinner />} title="Reading database" />;
 	} else {
 		return (
 			<div>
@@ -212,54 +176,88 @@ export const ReconcParams = (props) => {
 						matching.
 					</p>
 					<p>
-						<b>ID Column:</b> is the column containing uniqe identifiers
+						<b>ID Column:</b> is the column containing unique identifiers.
 					</p>
 				</Callout>
-				<ButtonGroup fill={true}>
-					<Popover2
-						isOpen={selectIdColumnIsActive}
-						content={<div style={{ padding: 5 }}>click on a column</div>}
-						placement="top"
-					>
-						<AnchorButton
-							icon="tag"
-							disabled={selectIsActive}
-							onClick={() => handleSelectButton("idColumn")}
-							loading={selectIdColumnIsActive}
-							intent={
-								props.projectSettings.reconcParams.idColumn !== ""
-									? "success"
-									: "none"
-							}
-						>
-							Select ID Column
-						</AnchorButton>
-					</Popover2>
-					<Popover2
-						isOpen={selectSearchColumnIsActive}
-						content={<div style={{ padding: 5 }}>click on a column</div>}
-						placement="top"
-					>
-						<AnchorButton
-							icon="search"
-							disabled={selectIsActive}
-							onClick={() => handleSelectButton("searchColumn")}
-							loading={selectSearchColumnIsActive}
-							intent={
-								props.projectSettings.reconcParams.searchColumn !== ""
-									? "success"
-									: "none"
-							}
-						>
-							Select Search Column
-						</AnchorButton>
-					</Popover2>
-				</ButtonGroup>
 				<PreviewTable />
 				<p className="bp3-text-small bp3-text-muted" style={{ padding: 5 }}>
 					(This is just a preview. The whole dataset will be present when
 					running the reconciliation service)
 				</p>
+				<FormGroup label="Select Columns">
+					<ButtonGroup>
+						<Select
+							filterable={false}
+							items={availableColumns.map((column) => {
+								return { name: column };
+							})}
+							itemRenderer={(column) => {
+								return (
+									<MenuItem
+										text={column.name}
+										key={column.name}
+										onClick={() => {
+											dispatch({
+												type:
+													"Component/StartProject/SET_RECONCILIATION_PARAMS",
+												payload: {
+													...state.reconcParams,
+													searchColumn: column.name,
+												},
+											});
+										}}
+									/>
+								);
+							}}
+						>
+							<Button
+								text={
+									"Search Column" +
+									(state.reconcParams.searchColumn
+										? ": " + state.reconcParams.searchColumn
+										: "")
+								}
+								rightIcon="chevron-down"
+								intent={state.reconcParams.searchColumn ? "success" : "primary"}
+							/>
+						</Select>
+						<Select
+							filterable={false}
+							items={availableColumns.map((column) => {
+								return { name: column };
+							})}
+							itemRenderer={(column) => {
+								return (
+									<MenuItem
+										text={column.name}
+										key={column.name}
+										onClick={() => {
+											dispatch({
+												type:
+													"Component/StartProject/SET_RECONCILIATION_PARAMS",
+												payload: {
+													...state.reconcParams,
+													idColumn: column.name,
+												},
+											});
+										}}
+									/>
+								);
+							}}
+						>
+							<Button
+								text={
+									"ID Column" +
+									(state.reconcParams.idColumn
+										? ": " + state.reconcParams.idColumn
+										: "")
+								}
+								rightIcon="chevron-down"
+								intent={state.reconcParams.idColumn ? "success" : "primary"}
+							/>
+						</Select>
+					</ButtonGroup>
+				</FormGroup>
 			</div>
 		);
 	}

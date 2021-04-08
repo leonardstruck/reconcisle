@@ -5,5 +5,8 @@ export default function () {
 	const getConfigView = (uuid) => {
 		return modules.find((module) => module().uuid === uuid)().configView;
 	};
-	return { modules, getConfigView };
+	const getService = (uuid) => {
+		return modules.find((module) => module().uuid === uuid)().service;
+	};
+	return { modules, getConfigView, getService };
 }

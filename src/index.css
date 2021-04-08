@@ -123,3 +123,8 @@ a:hover {
 	justify-content: space-between;
 	height: 100%;
 }
+
+.rightElementInButton {
+	height: 100%;
+	margin: 7px;
+}
