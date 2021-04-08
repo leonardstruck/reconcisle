@@ -50,7 +50,6 @@ const SubMenu = (props) => {
 		<Popover
 			content={
 				<Menu>
-					<MenuItem text="Rename" icon="edit" intent="primary" />
 					<MenuItem
 						text="Export"
 						icon="share"
