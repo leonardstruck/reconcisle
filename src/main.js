@@ -8,13 +8,13 @@ const {
 	autoUpdater,
 	dialog,
 } = require("electron");
-const { service } = require("./service");
 const { fileStore } = require("./fileStore");
 const Config = require("electron-config");
 const config = new Config();
 const log = require("electron-log");
 const os = require("os");
 const path = require("path");
+const modules = require("./modules/modules.js").default;
 
 // install Extensions
 const ReactDevTools = path.join(
@@ -318,7 +318,14 @@ ipcMain.on("fileStore", (event, arg) => {
 	event.reply(arg.reqId, result);
 });
 
-ipcMain.on("service", async (event, arg) => {
-	const result = await service(arg.service, arg.method, arg.obj);
-	event.reply(arg.reqId, result);
+// Module Service
+
+ipcMain.on("service", (event, arg) => {
+	const Modules = modules();
+	const sourceModule = arg.sourceModule;
+
+	const service = Modules.getService(sourceModule);
+	service(arg.method, arg.obj).then((res) => {
+		event.reply(arg.reqId, res);
+	});
 });

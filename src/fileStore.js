@@ -2,7 +2,6 @@ import { dialog } from "electron";
 import Store from "electron-store";
 import path from "path";
 import fs from "fs";
-import { service } from "./service";
 
 const projects = new Store({
 	name: "projects",
@@ -48,35 +47,12 @@ export const fileStore = (store, method, obj, userDataPath) => {
 
 		case "project":
 			switch (method) {
-				case "checkIfDataAvailable":
-					const project = new Store({
+				case "saveData":
+					const saveToStore = new Store({
 						name: obj.name,
 					});
-					const data = project.get("data", []);
-					const datalength = data.length;
-					const response = {
-						status: "ok",
-						isDataAvailable: datalength === 0 ? false : true,
-					};
-					return response;
-
-				case "downloadData":
-					const download = new Store({
-						name: obj.name,
-					});
-					const downloadResponse = service(
-						download.get("config.general.source"),
-						"getData",
-						download.get("config.sourceConfig")
-					).then((response) => {
-						if (response.status !== "ok") {
-							return { status: "error" };
-						} else {
-							download.set("data", response.data);
-							return { status: "ok" };
-						}
-					});
-					return downloadResponse;
+					saveToStore.set("data", obj.data);
+					return { status: "ok" };
 
 				case "newProject":
 					const newProject = new Store({

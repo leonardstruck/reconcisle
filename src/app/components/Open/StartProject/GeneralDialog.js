@@ -46,7 +46,7 @@ export const GeneralDialog = (props) => {
 		e.currentTarget.value = withoutSpace;
 		dispatch({
 			type: "Component/StartProject/CHANGE_NAME",
-			name: withoutSpace,
+			payload: withoutSpace,
 		});
 	};
 	return (
