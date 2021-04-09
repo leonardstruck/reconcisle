@@ -8,5 +8,6 @@ export default function () {
 	const getService = (uuid) => {
 		return modules.find((module) => module().uuid === uuid)().service;
 	};
+
 	return { modules, getConfigView, getService };
 }
