@@ -63,6 +63,11 @@ export const fileStore = (store, method, obj, userDataPath) => {
 					allProjects.push(obj.general);
 					projects.set("projects", allProjects);
 					return { status: "ok" };
+				case "getData":
+					const getDataFromProject = new Store({
+						name: obj,
+					});
+					return getDataFromProject.get("data");
 				case "export":
 					dialog
 						.showSaveDialog({

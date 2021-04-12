@@ -1,6 +1,7 @@
 const initialState = {
 	serviceStatus: "inactive",
-	loading: false,
+	loadingService: false,
+	loadingSource: false,
 };
 
 export const reconciliationReducer = (state = initialState, action) => {

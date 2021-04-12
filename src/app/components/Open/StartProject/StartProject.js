@@ -32,6 +32,7 @@ export const StartProject = (props) => {
 			obj: {
 				general: { name: state.name, sourceModule: state.sourceModule },
 				sourceConfig: state.sourceConfig,
+				reconcParams: state.reconcParams,
 			},
 		}).then((response) => {
 			serviceHandler(state.sourceModule, "getData", state.sourceConfig).then(

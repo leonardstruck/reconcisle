@@ -329,3 +329,11 @@ ipcMain.on("service", (event, arg) => {
 		event.reply(arg.reqId, res);
 	});
 });
+
+ipcMain.on("startReconciliationServer", (event, arg) => {
+	reconciliationService(arg.data, arg.config).then((res) => {
+		event.reply(arg.reqId, res);
+	});
+});
+
+console.log("You should use this path: ", app.getPath("userData"));

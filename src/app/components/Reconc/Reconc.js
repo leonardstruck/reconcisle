@@ -18,6 +18,7 @@ import {
 import { Link, useLocation } from "react-router-dom";
 import { fileStoreHandler } from "../../services/fileStoreHandler";
 import { StatusAnimation } from "./StatusAnimation";
+import { reconciliationServiceHandler } from "../../services/reconciliationServiceHandler";
 
 import { useSelector, useDispatch } from "react-redux";
 const selectReconciliationState = (state) => state.reconciliation;
@@ -37,6 +38,10 @@ export const Reconc = (props) => {
 	const handleClick = () => {
 		switch (state.serviceStatus) {
 			case "inactive":
+				reconciliationServiceHandler({}, { port: 8000 }).then((res) => {
+					setAnimationState("startFromInactive");
+					dispatch({ type: "Reconciliation/SERVICE_STARTED" });
+				});
 				setAnimationState("startFromInactive");
 				dispatch({ type: "Reconciliation/SERVICE_STARTED" });
 				break;
