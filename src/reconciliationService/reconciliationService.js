@@ -1,10 +1,15 @@
-const fastify = require("fastify")({ logger: true });
-fastify.register(require("fastify-formbody"));
 const yargs = require("yargs");
-const jsrender = require("jsrender");
 const argv = yargs(process.argv).argv;
-const port = argv.port;
-const Fuse = require("fuse.js");
+const port = argv.port || 1234;
+const express = require("express");
+const morgan = require("morgan");
+const { Worker } = require("worker_threads");
+
+const app = express();
+
+app.use(morgan("dev"));
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 if (!port) {
 	console.log("You have to specify a port using the --port argument");
@@ -31,149 +36,98 @@ const serviceMetadata = require("./serviceMetadata").get(port);
 const Store = require("electron-store");
 const store = new Store({ name: projectName, cwd: storagePath });
 const data = store.get("data");
-
 //get Reconciliation Parameters from Project File
 const SearchColumn = store.get("config").reconcParams.searchColumn;
 const IDColumn = store.get("config").reconcParams.idColumn;
-
-console.log(
-	"I found the following Reconciliation Parameters: " +
-		SearchColumn +
-		" & " +
-		IDColumn
-);
-
-//Setup Fuse.js Fuzzy Searching
-const fuse = new Fuse(data, {
-	keys: [SearchColumn],
-	includeScore: true,
+const filteredData = data.map((item) => {
+	const filteredObject = {
+		[SearchColumn]: item[SearchColumn],
+		[IDColumn]: item[IDColumn],
+	};
+	return filteredObject;
 });
 
-const search = async (query, limit) => {
-	if (!query) {
-		return [];
-	}
-	const searchResult = await fuse.search(query, { limit: limit || 10 });
-	const matches = [];
-	searchResult.map((entity) => {
-		matches.push({
-			id: entity.item[IDColumn],
-			name: entity.item[SearchColumn],
-			score: (1 - entity.score) * 100,
-			match: (1 - entity.score) * 100 > 98,
-			type: [
-				{
-					id: "/reconcIsle/",
-					name: "reconcIsle",
-				},
-			],
+const runService = (workerData) => {
+	return new Promise((resolve, reject) => {
+		const worker = new Worker("./worker.js", { workerData });
+		worker.on("message", resolve);
+		worker.on("error", reject);
+		worker.on("exit", (code) => {
+			if (code !== 0) {
+				reject(new Error("Worker stopped with exit code " + code));
+			}
 		});
 	});
-	return matches;
 };
 
-const reconcile = async (query, request, reply) => {
-	let responseObj = {};
-	switch (typeof query) {
-		case "object":
-			const queries = JSON.parse(query.queries);
-			const searchResults = await Promise.all(
-				Object.keys(queries).map(async function (key) {
-					let searchResponse = await search(
-						queries[key].query,
-						queries[key].limit
-					);
-					return { [key]: { result: searchResponse } };
-				})
-			);
-			responseObj = Object.assign({}, ...searchResults);
-			break;
-		default:
-			console.log("Type not programmed");
-	}
-	jsonpify(request, reply, responseObj);
+const search = async (query, limit, key) => {
+	return new Promise((resolve, reject) => {
+		runService({
+			data: filteredData,
+			SearchColumn: SearchColumn,
+			query: query,
+			limit: limit,
+		}).then((result) => {
+			let matches = [];
+			result.map((entity) => {
+				matches.push({
+					id: entity.item[IDColumn],
+					name: entity.item[SearchColumn],
+					score: (1 - entity.score) * 100,
+					match: (1 - entity.score) * 100 > 98,
+					type: [{ id: "/reconcIsle/", name: "reconcIsle" }],
+				});
+			});
+			resolve({ [key]: { result: matches } });
+		});
+	});
 };
 
-//JSONP
-const jsonpify = (request, reply, obj) => {
-	if (request.query.callback) {
-		reply.type("application/javascript");
-		const rep = request.query.callback + "(" + JSON.stringify(obj) + ")";
-		const repEscaped = rep.replace(/\//g, "\\/");
-		console.log("This is the reply sent back", repEscaped);
-		reply.send(repEscaped);
-	} else {
-		reply.send(obj);
-	}
+const reconcileQueries = (rawQueries) => {
+	const promise = new Promise((resolve, reject) => {
+		const queries = JSON.parse(rawQueries);
+		const promises = Object.keys(queries).map((key) => {
+			return search(queries[key].query, queries[key].limit || 10, key);
+		});
+		Promise.all(promises).then((res) => {
+			resolve(Object.assign({}, ...res));
+		});
+	});
+	return promise;
 };
 
-//Render Data to HTML for preview
-const renderItem = (id) => {
-	const item = data.find((o) => o[IDColumn] == id);
-	let html = "<table border ='1'>";
-	for (x in item) {
-		html += "<tr><td>" + x + "</td><td>" + item[x] + "</td></tr>";
-	}
-	html += "</table>";
-	return html;
-};
-
-//Declare Routes
-fastify.get("/", (request, reply) => {
-	if (request.query.callback) {
-		jsonpify(request, reply, serviceMetadata);
+//Routes
+app.get("/", (req, res) => {
+	if (req.query.callback) {
+		res.jsonp(serviceMetadata);
 	} else {
-		reply.type("text/html");
-		reply.send(infoHTML);
+		res.send(infoHTML);
 	}
 });
 
-fastify.get("/reconcile", (request, reply) => {
-	if (request.query.query) {
-		reconcile(request.query.query, request, reply);
-	} else if (request.query.queries) {
-		reconcile(request.query.queries, request, reply);
-	} else if (request.body) {
-		reconcile(request.body, request, reply);
-	} else {
-		jsonpify(request, reply, serviceMetadata);
+app.get("/reconcile", (req, res) => {
+	if (req.query.callback) {
+		res.jsonp(serviceMetadata);
 	}
 });
 
-fastify.post("/reconcile", (request, reply) => {
-	if (request.query.query) {
-		reconcile(request.query.query, request, reply);
-	} else if (request.query.queries) {
-		reconcile(request.query.queries, request, reply);
-	} else if (request.body) {
-		reconcile(request.body, request, reply);
-	} else {
-		jsonpify(request, reply, serviceMetadata);
-	}
+app.post("/reconcile", (req, res) => {
+	reconcileQueries(req.body.queries).then((result) => {
+		res.send(result);
+	});
 });
 
-fastify.get("/view/:params", (request, reply) => {
-	reply.type("text/html");
-	reply.send(renderItem(request.params.params));
+app.get("/view/:params", (req, res) => {
+	res.send(req.params.params);
 });
 
-fastify.get("/data", (request, reply) => {});
-
-fastify.get("/suggest", (request, reply) => {});
-
-fastify.get("/flyout", (request, reply) => {});
-
-fastify.get("/private/flyout", (request, reply) => {});
-
-fastify.get("*", (req, res) => {
-	res.status(404).send("Error 404");
+app.get("*", (req, res) => {
+	res.status(404).send("ERROR 404");
 });
 
-//Start the server
-fastify.listen(port, (err) => {
-	if (err) {
-		console.log(err);
-		process.exit(1);
-	}
-	console.log("Service is running on port", port);
+//Start Server
+app.listen(port, () => {
+	console.log(
+		"Reconciliation Service is listening at http://localhost:" + port
+	);
 });
