@@ -1,15 +1,10 @@
 const yargs = require("yargs");
 const argv = yargs(process.argv).argv;
 const port = argv.port || 1234;
-const express = require("express");
-const morgan = require("morgan");
 const { Worker } = require("worker_threads");
 
-const app = express();
-
-app.use(morgan("dev"));
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+const fastify = require("fastify")({ logger: true });
+fastify.register(require("fastify-formbody"));
 
 if (!port) {
 	console.log("You have to specify a port using the --port argument");
@@ -73,8 +68,8 @@ const search = async (query, limit, key) => {
 				matches.push({
 					id: entity.item[IDColumn],
 					name: entity.item[SearchColumn],
-					score: (1 - entity.score) * 100,
-					match: (1 - entity.score) * 100 > 98,
+					score: (100 - entity.score * 100).toFixed(5),
+					match: 100 - entity.score * 100 > 98,
 					type: [{ id: "/reconcIsle/", name: "reconcIsle" }],
 				});
 			});
@@ -96,38 +91,65 @@ const reconcileQueries = (rawQueries) => {
 	return promise;
 };
 
-//Routes
-app.get("/", (req, res) => {
-	if (req.query.callback) {
-		res.jsonp(serviceMetadata);
+const renderItem = (id) => {
+	const item = data.find((o) => o[IDColumn] == id);
+	let html = "<table border ='1'>";
+	for (x in item) {
+		html += "<tr><td>" + x + "</td><td>" + item[x] + "</td></tr>";
+	}
+	html += "</table>";
+	return html;
+};
+
+//JSONP
+const jsonpify = (request, reply, obj) => {
+	if (request.query.callback) {
+		reply.type("application/javascript");
+		const rep = request.query.callback + "(" + JSON.stringify(obj) + ")";
+		const repEscaped = rep.replace(/\//g, "\\/");
+		console.log("This is the reply sent back", repEscaped);
+		reply.send(repEscaped);
 	} else {
-		res.send(infoHTML);
+		reply.send(obj);
+	}
+};
+
+//Routes
+fastify.get("/", (request, reply) => {
+	if (request.query.callback) {
+		jsonpify(request, reply, serviceMetadata);
+	} else {
+		reply.type("text/html");
+		reply.send(infoHTML);
 	}
 });
 
-app.get("/reconcile", (req, res) => {
-	if (req.query.callback) {
-		res.jsonp(serviceMetadata);
+fastify.get("/reconcile", (request, reply) => {
+	if (request.query.callback) {
+		jsonpify(request, reply, serviceMetadata);
 	}
 });
 
-app.post("/reconcile", (req, res) => {
-	reconcileQueries(req.body.queries).then((result) => {
-		res.send(result);
+fastify.post("/reconcile", (request, reply) => {
+	reconcileQueries(request.body.queries).then((result) => {
+		reply.send(result);
 	});
 });
 
-app.get("/view/:params", (req, res) => {
-	res.send(req.params.params);
+fastify.get("/view/:params", (request, reply) => {
+	reply.type("text/html");
+	reply.send(renderItem(request.params.params));
 });
 
-app.get("*", (req, res) => {
-	res.status(404).send("ERROR 404");
+fastify.get("*", (request, reply) => {
+	request.status(404).send("ERROR 404");
 });
 
 //Start Server
-app.listen(port, () => {
-	console.log(
-		"Reconciliation Service is listening at http://localhost:" + port
-	);
+fastify.listen(port, (err) => {
+	if (err) {
+		console.log(err);
+		process.exit(1);
+	}
+	console.log("Service is running on port", port);
 });
