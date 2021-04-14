@@ -1,23 +1,22 @@
-const yargs = require("yargs");
-const argv = yargs(process.argv).argv;
-const port = argv.port || 1234;
-const { Worker } = require("worker_threads");
-
-const fastify = require("fastify")({ logger: true });
-fastify.register(require("fastify-formbody"));
-
+const { Worker, workerData } = require("worker_threads");
+const Fastify = require("fastify");
+const fastify = Fastify({ logger: true });
+const fastifyFormbody = require("fastify-formbody");
+fastify.register(fastifyFormbody);
+const path = require("path");
+const port = workerData.port;
+const projectName = workerData.projectName;
+const storagePath = workerData.storagePath;
 if (!port) {
 	console.log("You have to specify a port using the --port argument");
 	process.exit(1);
 }
-const projectName = argv.projectName;
 if (!projectName) {
 	console.log(
 		"You have to specify the project's name using the --projectName argument"
 	);
 	process.exit(1);
 }
-const storagePath = argv.storagePath;
 if (!storagePath) {
 	console.log(
 		"You have to specify the UserData path using the --storagePath argument"
@@ -42,9 +41,17 @@ const filteredData = data.map((item) => {
 	return filteredObject;
 });
 
-const runService = (workerData) => {
+const runService = (data) => {
 	return new Promise((resolve, reject) => {
-		const worker = new Worker("./worker.js", { workerData });
+		const workerPath = path.join(workerData.path, "worker.js");
+		const worker = new Worker(workerPath, {
+			workerData: {
+				data: data.data,
+				SearchColumn: data.SearchColumn,
+				query: data.query,
+				limit: data.limit,
+			},
+		});
 		worker.on("message", resolve);
 		worker.on("error", reject);
 		worker.on("exit", (code) => {
@@ -119,7 +126,7 @@ fastify.get("/", (request, reply) => {
 	if (request.query.callback) {
 		jsonpify(request, reply, serviceMetadata);
 	} else {
-		reply.type("text/html");
+		reply.type("text/html; charset=utf-8");
 		reply.send(infoHTML);
 	}
 });

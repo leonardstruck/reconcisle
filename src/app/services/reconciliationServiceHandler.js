@@ -1,11 +1,11 @@
 import uuid from "react-uuid";
 import { ipcRenderer } from "electron";
 
-export async function reconciliationServiceHandler(data, config) {
+export async function reconciliationServiceHandler(projectName, config) {
 	const randomID = uuid();
 	ipcRenderer.send("startReconciliationServer", {
 		reqId: randomID,
-		data: data,
+		projectName: projectName,
 		config: config,
 	});
 	const promise = new Promise((resolve) => {
@@ -15,3 +15,7 @@ export async function reconciliationServiceHandler(data, config) {
 	});
 	return promise;
 }
+
+export const stopReconciliationServer = () => {
+	ipcRenderer.send("stopReconciliationServer", []);
+};

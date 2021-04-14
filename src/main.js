@@ -15,7 +15,7 @@ const log = require("electron-log");
 const os = require("os");
 const path = require("path");
 const modules = require("./modules/modules.js").default;
-
+import { Worker } from "worker_threads";
 // install Extensions
 const ReactDevTools = path.join(
 	os.homedir(),
@@ -120,37 +120,6 @@ const createWindow = () => {
 
 	mainWindow.on("close", () => {
 		config.set("winBounds", mainWindow.getBounds());
-	});
-};
-
-const createProjectWindow = (windowToClose) => {
-	const windowConfig = {
-		width: 200,
-		height: 300,
-		resizable: false,
-		show: false,
-		backgroundColor: "#5C747A",
-		webPreferences: {
-			nodeIntegration: true,
-			contextIsolation: false,
-			webSecurity: false,
-		},
-	};
-
-	const projectWindow = new BrowserWindow(windowConfig);
-
-	projectWindow.loadURL(RECONC_WEBPACK_ENTRY);
-	if (isDev) {
-		projectWindow.webContents.addListener("did-frame-finish-load", () => {
-			projectWindow.webContents.openDevTools();
-		});
-	}
-	projectWindow.once("ready-to-show", () => {
-		projectWindow.show();
-		windowToClose.close();
-	});
-	projectWindow.on("close", () => {
-		createWindow();
 	});
 };
 
@@ -331,9 +300,20 @@ ipcMain.on("service", (event, arg) => {
 });
 
 ipcMain.on("startReconciliationServer", (event, arg) => {
-	reconciliationService(arg.data, arg.config).then((res) => {
-		event.reply(arg.reqId, res);
+	const data = fileStore("project", "getData", arg.projectName);
+	const reconciliationService = new Worker(
+		path.resolve(__dirname, "reconciliationService/reconciliationService.js"),
+		{
+			workerData: {
+				port: arg.port || 1234,
+				projectName: arg.projectName,
+				storagePath: app.getPath("userData"),
+			},
+		}
+	);
+	reconciliationService.on("error", event.reply({ status: "error" }));
+	reconciliationService.on("exit", console.log("Service stopped"));
+	ipcMain.on("stopReconciliationServer", (event, arg) => {
+		reconciliationService.terminate();
 	});
 });
-
-console.log("You should use this path: ", app.getPath("userData"));
