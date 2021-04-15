@@ -1,38 +1,29 @@
 const { Worker, workerData } = require("worker_threads");
-const Fastify = require("fastify");
-const fastify = Fastify({ logger: true });
-const fastifyFormbody = require("fastify-formbody");
-fastify.register(fastifyFormbody);
 const path = require("path");
+const dirPath = workerData.path;
+const Fastify = require(path.resolve(dirPath, "node_modules", "fastify"));
+const fastify = Fastify({ logger: true });
+const fastifyFormbody = require(path.resolve(
+	dirPath,
+	"node_modules",
+	"fastify-formbody"
+));
+fastify.register(fastifyFormbody);
 const port = workerData.port;
-const projectName = workerData.projectName;
-const storagePath = workerData.storagePath;
+const data = workerData.data;
+
 if (!port) {
 	console.log("You have to specify a port using the --port argument");
 	process.exit(1);
 }
-if (!projectName) {
-	console.log(
-		"You have to specify the project's name using the --projectName argument"
-	);
-	process.exit(1);
-}
-if (!storagePath) {
-	console.log(
-		"You have to specify the UserData path using the --storagePath argument"
-	);
-	process.exit(1);
-}
-const infoHTML = require("./infoHTML.js").getHTML(port);
-const serviceMetadata = require("./serviceMetadata").get(port);
 
-//get Data from Store
-const Store = require("electron-store");
-const store = new Store({ name: projectName, cwd: storagePath });
-const data = store.get("data");
-//get Reconciliation Parameters from Project File
-const SearchColumn = store.get("config").reconcParams.searchColumn;
-const IDColumn = store.get("config").reconcParams.idColumn;
+const infoHTML = require(path.resolve(dirPath, "infoHTML.js")).getHTML(port);
+const serviceMetadata = require(path.resolve(dirPath, "serviceMetadata")).get(
+	port
+);
+
+const SearchColumn = workerData.SearchColumn;
+const IDColumn = workerData.IDColumn;
 const filteredData = data.map((item) => {
 	const filteredObject = {
 		[SearchColumn]: item[SearchColumn],
@@ -43,9 +34,10 @@ const filteredData = data.map((item) => {
 
 const runService = (data) => {
 	return new Promise((resolve, reject) => {
-		const workerPath = path.join(workerData.path, "worker.js");
+		const workerPath = path.resolve(dirPath, "worker.js");
 		const worker = new Worker(workerPath, {
 			workerData: {
+				dirPath: dirPath,
 				data: data.data,
 				SearchColumn: data.SearchColumn,
 				query: data.query,

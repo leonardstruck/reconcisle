@@ -1,4 +1,3 @@
-import { hot } from "react-hot-loader";
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 import { MemoryRouter as Router, Switch, Route } from "react-router-dom";
@@ -28,7 +27,5 @@ export const App = () => {
 		</Provider>
 	);
 };
-
-export default hot(module)(App);
 
 ReactDOM.render(<App />, document.getElementById("App"));

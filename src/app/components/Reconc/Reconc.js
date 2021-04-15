@@ -47,17 +47,19 @@ export const Reconc = (props) => {
 						dispatch({ type: "Reconciliation/SERVICE_STARTED" });
 					}
 				);
-				setAnimationState("startFromInactive");
-				dispatch({ type: "Reconciliation/SERVICE_STARTED" });
 				break;
 			case "started":
+				stopReconciliationServer();
 				setAnimationState("stopFromActive");
 				dispatch({ type: "Reconciliation/SERVICE_STOPPED" });
 				break;
 			case "stopped":
-				stopReconciliationServer();
-				setAnimationState("startFromStopped");
-				dispatch({ type: "Reconciliation/SERVICE_STARTED" });
+				reconciliationServiceHandler(query.get("name"), { port: 8000 }).then(
+					(res) => {
+						setAnimationState("startFromStopped");
+						dispatch({ type: "Reconciliation/SERVICE_STARTED" });
+					}
+				);
 				break;
 		}
 	};

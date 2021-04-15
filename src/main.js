@@ -16,6 +16,11 @@ const os = require("os");
 const path = require("path");
 const modules = require("./modules/modules.js").default;
 import { Worker } from "worker_threads";
+const Store = require("electron-store");
+
+const Fastify = require("fastify");
+const fastifyFormbody = require("fastify-formbody");
+
 // install Extensions
 const ReactDevTools = path.join(
 	os.homedir(),
@@ -299,21 +304,37 @@ ipcMain.on("service", (event, arg) => {
 	});
 });
 
+let reconciliationService;
+const unpackedDir = isDev
+	? path.resolve(__dirname, "rec")
+	: path.resolve(
+			app.getAppPath(),
+			"..",
+			"app.asar.unpacked/.webpack/main/rec/"
+	  );
+
 ipcMain.on("startReconciliationServer", (event, arg) => {
-	const data = fileStore("project", "getData", arg.projectName);
-	const reconciliationService = new Worker(
-		path.resolve(__dirname, "reconciliationService/reconciliationService.js"),
+	const data = new Store({
+		name: arg.projectName,
+	});
+	reconciliationService = new Worker(
+		path.resolve(unpackedDir, "reconciliationService.js"),
 		{
 			workerData: {
+				path: unpackedDir,
 				port: arg.port || 1234,
-				projectName: arg.projectName,
-				storagePath: app.getPath("userData"),
+				data: data.get("data"),
+				SearchColumn: data.get("config.reconcParams.searchColumn"),
+				IDColumn: data.get("config.reconcParams.idColumn"),
 			},
 		}
 	);
-	reconciliationService.on("error", event.reply({ status: "error" }));
-	reconciliationService.on("exit", console.log("Service stopped"));
-	ipcMain.on("stopReconciliationServer", (event, arg) => {
-		reconciliationService.terminate();
+	reconciliationService.on("exit", () => {
+		console.log("Service Stopped");
 	});
+	event.reply(arg.reqId, { status: "ok" });
+});
+
+ipcMain.on("stopReconciliationServer", (event, arg) => {
+	reconciliationService.terminate();
 });

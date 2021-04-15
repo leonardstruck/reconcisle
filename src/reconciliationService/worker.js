@@ -1,5 +1,11 @@
 const { workerData, parentPort } = require("worker_threads");
-const Fuse = require("fuse.js");
+const path = require("path");
+
+const Fuse = require(path.resolve(
+	workerData.dirPath,
+	"node_modules",
+	"fuse.js"
+));
 
 const data = workerData.data;
 const SearchColumn = workerData.SearchColumn;

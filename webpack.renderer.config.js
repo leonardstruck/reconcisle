@@ -1,4 +1,6 @@
 const rules = require("./webpack.rules");
+const CopyWebpackPlugin = require("copy-webpack-plugin");
+const path = require("path");
 
 rules.push({
 	test: /\.css$/,
@@ -10,4 +12,14 @@ module.exports = {
 	module: {
 		rules,
 	},
+	plugins: [
+		new CopyWebpackPlugin({
+			patterns: [
+				{
+					from: path.join(__dirname, "/src/reconciliationService"),
+					to: "../main/rec",
+				},
+			],
+		}),
+	],
 };

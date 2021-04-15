@@ -17,5 +17,5 @@ export async function reconciliationServiceHandler(projectName, config) {
 }
 
 export const stopReconciliationServer = () => {
-	ipcRenderer.send("stopReconciliationServer", []);
+	ipcRenderer.send("stopReconciliationServer");
 };
