@@ -18,9 +18,6 @@ const modules = require("./modules/modules.js").default;
 import { Worker } from "worker_threads";
 const Store = require("electron-store");
 
-const Fastify = require("fastify");
-const fastifyFormbody = require("fastify-formbody");
-
 // install Extensions
 const ReactDevTools = path.join(
 	os.homedir(),

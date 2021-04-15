@@ -53,7 +53,11 @@ export const fileStore = (store, method, obj, userDataPath) => {
 					});
 					saveToStore.set("data", obj.data);
 					return { status: "ok" };
-
+				case "getConfig":
+					const storetocheck = new Store({
+						name: obj.name,
+					});
+					return storetocheck.get("config");
 				case "newProject":
 					const newProject = new Store({
 						name: obj.general.name,

@@ -27,5 +27,8 @@ export const App = () => {
 		</Provider>
 	);
 };
+if (module.hot) {
+	module.hot.accept();
+}
 
 ReactDOM.render(<App />, document.getElementById("App"));

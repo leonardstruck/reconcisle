@@ -9,5 +9,9 @@ export default function () {
 		return modules.find((module) => module().uuid === uuid)().service;
 	};
 
-	return { modules, getConfigView, getService };
+	const getMetaData = (uuid) => {
+		return modules.find((module) => module().uuid === uuid)().meta;
+	};
+
+	return { modules, getConfigView, getService, getMetaData };
 }

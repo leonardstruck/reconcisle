@@ -38,6 +38,10 @@
 					"entitlements": "entitlements.plist",
 					"entitlements-inherit": "entitlements.plist"
 				},
+				"osxNotarize": {
+					"appleId": "leonard@blockform.at",
+					"appleIdPassword": "@keychain:Application Loader: leonard@blockform.at"
+				},
 				"icon": "./src/app/assets/icon/icon.icns",
 				"app-bundle-id": "com.leonardstruck.reconcisle"
 			},
@@ -117,6 +121,7 @@
 		"@electron-forge/plugin-auto-unpack-natives": "^6.0.0-beta.54",
 		"@electron-forge/plugin-webpack": "6.0.0-beta.54",
 		"@electron-forge/publisher-github": "^6.0.0-beta.54",
+		"@pmmmwh/react-refresh-webpack-plugin": "^0.4.3",
 		"@svgr/webpack": "^5.5.0",
 		"@types/electron-config": "^3.2.2",
 		"@vercel/webpack-asset-relocator-loader": "^1.3.0",
@@ -127,6 +132,7 @@
 		"electron-rebuild": "^2.3.5",
 		"node-loader": "^1.0.2",
 		"raw-loader": "^4.0.2",
+		"react-refresh": "^0.8.3",
 		"style-loader": "^1.2.1"
 	},
 	"dependencies": {
@@ -137,6 +143,7 @@
 		"@electron-forge/maker-dmg": "^6.0.0-beta.54",
 		"ajv": "^8.0.3",
 		"ajv-formats": "^2.0.1",
+		"ajv-keywords": "^5.0.0",
 		"cardinal": "^2.1.1",
 		"electron-builder": "^22.10.5",
 		"electron-config": "^2.0.0",
@@ -155,8 +162,8 @@
 		"pg": "^8.5.1",
 		"pg-hstore": "^2.3.3",
 		"prop-types": "^15.5.7",
-		"react": "^16.8.0",
-		"react-dom": "^16.8.0",
+		"react": "^16.9.0",
+		"react-dom": "^16.9.0",
 		"react-helmet": "^6.1.0",
 		"react-redux": "^7.2.3",
 		"react-router-dom": "^5.2.0",
@@ -167,7 +174,7 @@
 		"slugify": "^1.5.0",
 		"sqlite3": "^5.0.2",
 		"tedious": "^11.0.6",
-		"webpack": "^5.32.0",
+		"webpack": "^4.43.0",
 		"yargs": "^16.2.0"
 	}
 }

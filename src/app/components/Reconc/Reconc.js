@@ -22,6 +22,8 @@ import {
 	reconciliationServiceHandler,
 	stopReconciliationServer,
 } from "../../services/reconciliationServiceHandler";
+import modules from "../../../modules/modules";
+const Modules = modules();
 
 import { useSelector, useDispatch } from "react-redux";
 const selectReconciliationState = (state) => state.reconciliation;
@@ -29,14 +31,28 @@ const selectReconciliationState = (state) => state.reconciliation;
 export const Reconc = (props) => {
 	const [animationState, setAnimationState] = useState("inactive");
 	const [drawerState, setDrawerState] = useState(false);
+	const [isAbleToRefresh, setIsAbleToRefresh] = useState(false);
 	const history = useHistory();
 	const dispatch = useDispatch();
 	const state = useSelector(selectReconciliationState);
-
 	function useQuery() {
 		return new URLSearchParams(useLocation().search);
 	}
 	let query = useQuery();
+	const projectName = query.get("name");
+	let projectConfiguration;
+	fileStoreHandler({
+		store: "project",
+		method: "getConfig",
+		obj: {
+			name: projectName,
+		},
+	}).then((res) => {
+		projectConfiguration = res;
+		setIsAbleToRefresh(
+			Modules.getMetaData(projectConfiguration.general.sourceModule).canUpdate
+		);
+	});
 
 	const handleClick = () => {
 		switch (state.serviceStatus) {
@@ -103,6 +119,13 @@ export const Reconc = (props) => {
 						{state.serviceStatus === "stopped" && "Restart the Service"}
 						{state.serviceStatus === "started" && "Stop the Service"}
 					</Button>
+					{isAbleToRefresh &&
+						(state.serviceStatus === "inactive" ||
+							state.serviceStatus === "stopped") && (
+							<Button intent="primary" icon="refresh">
+								Refresh Data
+							</Button>
+						)}
 				</ButtonGroup>
 				<ButtonGroup large={true} minimal={true} fill={true}>
 					<Button
