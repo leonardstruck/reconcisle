@@ -11,66 +11,18 @@ body {
 	overflow: hidden;
 }
 
-/*
-body {
-	background: linear-gradient(-45deg, #f2c8ad, #cc8e6d, #5c747a);
-	background-size: 600% 600%;
-	animation: gradient 30s ease 2s infinite, blendin 2s ease forwards;
-	-webkit-animation: gradient 30s ease 2s infinite, blendin 2s ease forwards;
-}
-
-@keyframes gradient {
-	0% {
-		background-position: 0% 0%;
-	}
-	50% {
-		background-position: 100% 50%;
-	}
-	100% {
-		background-position: 0% 0%;
-	}
-}
-
-@keyframes blendin {
-	from {
-		opacity: 0;
-		transform: scale(0.98);
-		-webkit-transform: scale(0.98);
-		-moz-transform: scale(0.98);
-		-ms-transform: scale(0.98);
-		-o-transform: scale(0.98);
-	}
-	to {
-		opacity: 1;
-		transform: scale(1);
-		-webkit-transform: scale(1);
-		-moz-transform: scale(1);
-		-ms-transform: scale(1);
-		-o-transform: scale(1);
-	}
-}
-*/
-
 .app_logo {
 	width: 250px;
 	height: 250px;
 	align-self: center;
-	border-radius: 5px;
-	margin: 10px;
-	-webkit-border-radius: 5px;
-	-moz-border-radius: 5px;
-	-ms-border-radius: 5px;
-	-o-border-radius: 5px;
+	margin-top: 40px;
+	border-radius: 125px;
 	filter: drop-shadow(0px 16px 6px rgba(0, 0, 0, 0.1));
-}
-.fade-enter {
-	opacity: 0;
-	z-index: 1;
-}
-
-.fade-enter.fade-enter-active {
-	opacity: 1;
-	transition: opacity 250ms ease-in;
+	overflow: hidden;
+	-webkit-border-radius: 125px;
+	-moz-border-radius: 125px;
+	-ms-border-radius: 125px;
+	-o-border-radius: 125px;
 }
 
 #App {
@@ -80,10 +32,10 @@ body {
 
 .centeredCard {
 	width: 400px;
-	height: 450px;
+	height: 500px;
 	position: absolute;
-	margin-left: -205px;
-	margin-top: -225px;
+	margin-left: -200px;
+	margin-top: -250px;
 	left: 50%;
 	top: 50%;
 	display: flex;

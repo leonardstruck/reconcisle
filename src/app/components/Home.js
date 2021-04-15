@@ -1,8 +1,8 @@
 import * as React from "react";
 import { Link } from "react-router-dom";
 import { Helmet } from "react-helmet";
-import Island from "../assets/island.svg";
-
+import Lottie from "lottie-react";
+import logoAnimation from "../assets/logoAnimation.json";
 import { Button, Card, Elevation } from "@blueprintjs/core";
 
 export const Home = () => {
@@ -12,11 +12,13 @@ export const Home = () => {
 				<title>reconcIsle</title>
 			</Helmet>
 			<Card elevation={Elevation.FOUR} className="centeredCard">
-				<Island className="app_logo" />
+				<div className="app_logo">
+					<Lottie animationData={logoAnimation} />
+				</div>
 				<div>
 					<h3 className="bp3-heading">reconcIsle</h3>
 					<p className="bp3-text-large">
-						set up your own reconciliation service easily.
+						A tool to easily build reconciliation services from your own data
 					</p>
 					<Link to="/open">
 						<Button

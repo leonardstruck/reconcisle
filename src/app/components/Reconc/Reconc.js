@@ -5,16 +5,20 @@ import {
 	Card,
 	Elevation,
 	Button,
-	Spinner,
+	AnchorButton,
 	NonIdealState,
-	Callout,
 	ButtonGroup,
-	Collapse,
+	NumericInput,
 	Code,
-	Drawer,
 	Classes,
 	Dialog,
+	FormGroup,
 } from "@blueprintjs/core";
+import {
+	Popover2,
+	Tooltip2,
+	Classes as PopoverClasses,
+} from "@blueprintjs/popover2";
 import { Link, useLocation } from "react-router-dom";
 import { fileStoreHandler } from "../../services/fileStoreHandler";
 import { StatusAnimation } from "./StatusAnimation";
@@ -30,6 +34,7 @@ const selectReconciliationState = (state) => state.reconciliation;
 
 export const Reconc = (props) => {
 	const [animationState, setAnimationState] = useState("inactive");
+	const [port, setPort] = useState(1234);
 	const [drawerState, setDrawerState] = useState(false);
 	const [isAbleToRefresh, setIsAbleToRefresh] = useState(false);
 	const history = useHistory();
@@ -57,7 +62,7 @@ export const Reconc = (props) => {
 	const handleClick = () => {
 		switch (state.serviceStatus) {
 			case "inactive":
-				reconciliationServiceHandler(query.get("name"), { port: 8000 }).then(
+				reconciliationServiceHandler(query.get("name"), { port }).then(
 					(res) => {
 						setAnimationState("startFromInactive");
 						dispatch({ type: "Reconciliation/SERVICE_STARTED" });
@@ -70,7 +75,7 @@ export const Reconc = (props) => {
 				dispatch({ type: "Reconciliation/SERVICE_STOPPED" });
 				break;
 			case "stopped":
-				reconciliationServiceHandler(query.get("name"), { port: 8000 }).then(
+				reconciliationServiceHandler(query.get("name"), { port }).then(
 					(res) => {
 						setAnimationState("startFromStopped");
 						dispatch({ type: "Reconciliation/SERVICE_STARTED" });
@@ -98,6 +103,9 @@ export const Reconc = (props) => {
 							: "Start the Service by clicking the button below"
 					}
 				/>
+				{isAbleToRefresh && (
+					<p className={Classes.TEXT_SMALL}>Data last updated on:</p>
+				)}
 				<ButtonGroup fill={true} minimal={true} large={true}>
 					<Button
 						onClick={() => handleClick()}
@@ -115,17 +123,59 @@ export const Reconc = (props) => {
 								: "danger"
 						}
 					>
-						{state.serviceStatus === "inactive" && "Start the Service"}
-						{state.serviceStatus === "stopped" && "Restart the Service"}
-						{state.serviceStatus === "started" && "Stop the Service"}
+						{state.serviceStatus === "inactive" && "Start"}
+						{state.serviceStatus === "stopped" && "Restart"}
+						{state.serviceStatus === "started" && "Stop"}
 					</Button>
 					{isAbleToRefresh &&
 						(state.serviceStatus === "inactive" ||
 							state.serviceStatus === "stopped") && (
-							<Button intent="primary" icon="refresh">
-								Refresh Data
-							</Button>
+							<Tooltip2
+								intent="warning"
+								content={
+									<p style={{ width: 220 }}>
+										This service is able to pull new data from the configured
+										source. Please keep in mind, that any previous data will
+										be&nbsp;
+										<b>overwritten</b>.
+									</p>
+								}
+							>
+								<Button intent="primary" icon="refresh">
+									Refresh Data
+								</Button>
+							</Tooltip2>
 						)}
+					{(state.serviceStatus === "inactive" ||
+						state.serviceStatus === "stopped") && (
+						<Popover2
+							popoverClassName={PopoverClasses.POPOVER2_CONTENT_SIZING}
+							content={
+								<div>
+									<FormGroup
+										helperText="You can use the arrow keys on your keyboard. Hold shift to change the value by 100, hold alt to change the value by 1."
+										style={{ width: 150 }}
+									>
+										<NumericInput
+											value={port}
+											majorStepSize={100}
+											stepSize={10}
+											minorStepSize={1}
+											fill={true}
+											leftIcon="locate"
+											autoFocus={true}
+											onValueChange={(number) =>
+												number >= 1025 && number <= 65535 && setPort(number)
+											}
+											min={1}
+										/>
+									</FormGroup>
+								</div>
+							}
+						>
+							<AnchorButton icon="cog">Port</AnchorButton>
+						</Popover2>
+					)}
 				</ButtonGroup>
 				<ButtonGroup large={true} minimal={true} fill={true}>
 					<Button
@@ -160,10 +210,28 @@ export const Reconc = (props) => {
 			>
 				<div className={Classes.DIALOG_BODY}>
 					<p>
-						First and foremost you have to setup OpenRefine to use reconcIsle as
-						Reconciliation Service. To do just that, add{" "}
-						<Code>http://localhost:8000/reconcisle/</Code> as a reconciliation
-						service to OpenRefine.
+						First you need to add reconcIsle as reconciliation service to
+						OpenRefine. To do this, enter the following address when asked for
+						the URL.
+					</p>
+					<p>
+						<Code style={{ fontSize: 15 }}>
+							http://localhost:{port}/reconcile/
+						</Code>
+					</p>
+					<p>
+						Refer to the public documentation when setting up a reconciliation
+						service:{" "}
+						<a
+							href="https://docs.openrefine.org/manual/reconciling"
+							target="_blank"
+						>
+							OpenRefine Documentation
+						</a>
+					</p>
+					<p>
+						It gives a comprehensive insight into the topic of reconciliation as
+						well as other information that is essential when using OpenRefine.
 					</p>
 				</div>
 

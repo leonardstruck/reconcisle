@@ -17,6 +17,7 @@ const path = require("path");
 const modules = require("./modules/modules.js").default;
 import { Worker } from "worker_threads";
 const Store = require("electron-store");
+const open = require("open");
 
 // install Extensions
 const ReactDevTools = path.join(
@@ -118,6 +119,11 @@ const createWindow = () => {
 	// show window gracefully
 	mainWindow.once("ready-to-show", () => {
 		mainWindow.show();
+	});
+
+	mainWindow.webContents.on("new-window", function (event, url) {
+		event.preventDefault();
+		open(url);
 	});
 
 	mainWindow.on("close", () => {
@@ -319,7 +325,7 @@ ipcMain.on("startReconciliationServer", (event, arg) => {
 		{
 			workerData: {
 				path: unpackedDir,
-				port: arg.port || 1234,
+				port: arg.config.port || 1234,
 				data: data.get("data"),
 				SearchColumn: data.get("config.reconcParams.searchColumn"),
 				IDColumn: data.get("config.reconcParams.idColumn"),
