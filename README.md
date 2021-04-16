@@ -3,6 +3,7 @@
 # reconcIsle
 
 reconcIsle is an electron app to easily build reconciliation services from your own data sources.
+**This app is not yet ready for production. If there are any bugs, I would be very happy if you would create an issue.**
 
 ## Installation
 
@@ -20,11 +21,7 @@ It gives a comprehensive insight into the topic of reconciliation as well as oth
 ## Supported Sources
 
 - Relational Databases:
-  - PostgreSQL
   - MySQL\*
-  - MariaDB
-  - SQLite
-  - Microsoft SQL Server
 
 \* supports data refreshing
 
@@ -32,5 +29,15 @@ It gives a comprehensive insight into the topic of reconciliation as well as oth
 
 I'm planning on adding the following sources as well:
 
+- Relational Databases:
+  - PostgreSQL
+  - MariaDB
+  - SQLite
+  - Microsoft SQL Server
 - Excel Spreadsheets
 - CSV
+
+These are the features I want to add:
+
+- import project files
+- custom queries
