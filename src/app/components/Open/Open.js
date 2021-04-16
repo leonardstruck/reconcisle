@@ -13,7 +13,7 @@ export const Open = () => {
 	return (
 		<div>
 			<Helmet>
-				<title>reconcIsle - Open</title>
+				<title>reconcIsle - Project Overview</title>
 			</Helmet>
 			<Card elevation={Elevation.FOUR} className="centeredCard">
 				<ProjectList {...{ startProjectState, setStartProjectState }} />
