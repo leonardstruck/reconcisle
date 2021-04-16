@@ -3,6 +3,8 @@ const CopyWebpackPlugin = require("copy-webpack-plugin");
 const path = require("path");
 const ReactRefreshWebpackPlugin = require("@pmmmwh/react-refresh-webpack-plugin");
 
+const isDevelopment = process.env.NODE_ENV === "development";
+
 rules.push({
 	test: /\.css$/,
 	use: [{ loader: "style-loader" }, { loader: "css-loader" }],
@@ -14,11 +16,12 @@ module.exports = {
 		rules,
 	},
 	plugins: [
-		new ReactRefreshWebpackPlugin({
-			overlay: {
-				sockIntegration: "whm",
-			},
-		}),
+		isDevelopment &&
+			new ReactRefreshWebpackPlugin({
+				overlay: {
+					sockIntegration: "whm",
+				},
+			}),
 		new CopyWebpackPlugin({
 			patterns: [
 				{
@@ -27,5 +30,5 @@ module.exports = {
 				},
 			],
 		}),
-	],
+	].filter(Boolean),
 };
