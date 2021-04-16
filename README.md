@@ -6,7 +6,7 @@ reconcIsle is an electron app to easily build reconciliation services from your 
 
 ## Installation
 
-Recommended is the installation via one of the provided [releases](https://github.com/leonardstruck/reconcisle/releases).
+Recommended is the installation via one of the provided [releases](https://reconcisle.leonardstruck.com/).
 
 ## Usage
 
