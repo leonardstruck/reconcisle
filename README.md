@@ -1,5 +1,5 @@
-<div style="text-align: center"><img src="src/app/assets/island.svg" style="width: 250px; border-radius: 125px; filter: drop-shadow(0px 16px 6px rgba(0, 0, 0, 0.15));
-"></div>
+<p align="center"><img src="src/app/assets/island.svg" width="250";
+"></p>
 
 # reconcIsle
 
