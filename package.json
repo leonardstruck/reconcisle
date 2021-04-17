@@ -62,8 +62,11 @@
 					"name": "@electron-forge/maker-squirrel",
 					"config": {
 						"name": "reconcIsle",
-						"authors": "",
-						"iconUrl": "https://raw.githubusercontent.com/leonardstruck/reconcisle/main/src/app/assets/icon/icon.ico"
+						"authors": "reconcIsle",
+						"title": "reconcIsle",
+						"owners": "reconcIsle",
+						"iconUrl": "https://raw.githubusercontent.com/leonardstruck/reconcisle/main/src/app/assets/icon/icon.ico",
+						"setupIcon": "./src/app/assets/icon/icon.ico"
 					}
 				},
 				{
