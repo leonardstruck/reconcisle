@@ -55,6 +55,7 @@ export const GeneralDialog = (props) => {
 				<InputGroup
 					id="name"
 					onChange={handleNameChange}
+					autoFocus={true}
 					value={state.name}
 					intent={isDuplicate ? "danger" : "none"}
 					rightElement={
