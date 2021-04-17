@@ -22,7 +22,7 @@ const open = require("open");
 // install Extensions
 const ReactDevTools = path.join(
 	os.homedir(),
-	"/Library/Application Support/Google/Chrome/Default/Extensions/fmkadmapgofadopljbjfkapdkoienihi/4.10.1_0"
+	"/Library/Application Support/Google/Chrome/Default/Extensions/fmkadmapgofadopljbjfkapdkoienihi/4.12.2_0"
 );
 const ReduxDevTools = path.join(
 	os.homedir(),
@@ -136,12 +136,14 @@ const createWindow = () => {
 // Some APIs can only be used after this event occurs.
 app.on("ready", async () => {
 	if (isDev) {
-		await installExtensions().then(() => {
-			createWindow();
-		}).catch(err => {
-			console.log("couldn't load dev extensions. ", err);
-			createWindow();
-		});
+		await installExtensions()
+			.then(() => {
+				createWindow();
+			})
+			.catch((err) => {
+				console.log("couldn't load dev extensions. ", err);
+				createWindow();
+			});
 	} else {
 		createWindow();
 	}
