@@ -138,6 +138,9 @@ app.on("ready", async () => {
 	if (isDev) {
 		await installExtensions().then(() => {
 			createWindow();
+		}).catch(err => {
+			console.log("couldn't load dev extensions. ", err);
+			createWindow();
 		});
 	} else {
 		createWindow();
