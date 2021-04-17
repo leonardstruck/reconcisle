@@ -1,4 +1,4 @@
-<p align="center"><img src="src/app/assets/island.svg" width="250" height="250"></p>
+<p align="center"><img src="src/app/assets/icon/icon.ico" width="250" height="250"></p>
 
 # reconcIsle
 
