@@ -11,8 +11,11 @@ export const configView = () => {
 	const state = useSelector(selectStartProjectState);
 	useEffect(() => {
 		if (
-			state.sourceConfig.connectionStatus === "ok" &&
-			state.sourceConfig.table
+			(state.sourceConfig.connectionStatus === "ok" &&
+				state.sourceConfig.table &&
+				!state.sourceConfig.advanced) ||
+			(state.sourceConfig.connectionStatus === "ok" &&
+				state.sourceConfig.advanced)
 		) {
 			dispatch({ type: "Component/StartProject/ENABLE_NEXT_BUTTON" });
 		} else {

@@ -40,15 +40,13 @@ export default async (method, obj) => {
 					.authenticate()
 					.then(() => {
 						console.log("Connection was established successfully");
+						const query = obj.advanced
+							? obj.advancedConfig
+							: "SELECT * FROM `" + obj.database + "`.`" + obj.table + "`";
 						sequelize
-							.query(
-								"SELECT * FROM `" +
-									obj.database +
-									"`.`" +
-									obj.table +
-									"` ORDER BY RAND() LIMIT 10",
-								{ type: QueryTypes.SELECT }
-							)
+							.query(query + " ORDER BY RAND() LIMIT 10", {
+								type: QueryTypes.SELECT,
+							})
 							.then((res) => {
 								sequelize.close();
 								resolve({ status: "ok", tableContent: res });
@@ -68,11 +66,11 @@ export default async (method, obj) => {
 					.authenticate()
 					.then(() => {
 						console.log("Connection was established successfully");
+						const query = obj.advanced
+							? obj.advancedConfig
+							: "SELECT * FROM `" + obj.database + "`.`" + obj.table + "`";
 						sequelize
-							.query(
-								"SELECT * FROM `" + obj.database + "`.`" + obj.table + "`",
-								{ type: QueryTypes.SELECT }
-							)
+							.query(query, { type: QueryTypes.SELECT })
 							.then((res) => {
 								sequelize.close();
 								resolve({ status: "ok", data: res });

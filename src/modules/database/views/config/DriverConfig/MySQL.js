@@ -7,8 +7,10 @@ import {
 	NumericInput,
 	MenuItem,
 	Checkbox,
+	TextArea,
+	Collapse,
 } from "@blueprintjs/core";
-import { Tooltip2 } from "@blueprintjs/popover2";
+import { Classes, Popover2, Tooltip2 } from "@blueprintjs/popover2";
 import { Select } from "@blueprintjs/select";
 
 import React, { useEffect, useState } from "react";
@@ -65,6 +67,27 @@ export const MySQL = () => {
 				table: "",
 			},
 		});
+	};
+
+	const handleCustomQueryChange = (e) => {
+		if (e.currentTarget.value === "") {
+			dispatch({
+				type: "Component/StartProject/SET_SOURCE_CONFIG",
+				payload: {
+					...state.sourceConfig,
+					advancedConfig: "SELECT ",
+				},
+			});
+		}
+		if (e.currentTarget.value.startsWith("SELECT ")) {
+			dispatch({
+				type: "Component/StartProject/SET_SOURCE_CONFIG",
+				payload: {
+					...state.sourceConfig,
+					advancedConfig: e.currentTarget.value,
+				},
+			});
+		}
 	};
 
 	const handleConnect = (setAvailableTables) => {
@@ -133,6 +156,8 @@ export const MySQL = () => {
 								<MenuItem
 									text={table.name}
 									key={table.name}
+									icon={state.sourceConfig.table === table.name && "tick"}
+									disabled={state.sourceConfig.table === table.name}
 									onClick={() => {
 										dispatch({
 											type: "Component/StartProject/SET_SOURCE_CONFIG",
@@ -156,10 +181,9 @@ export const MySQL = () => {
 						>
 							<Button
 								text={
-									state.sourceConfig.table
-										? "Selected table: " + state.sourceConfig.table
-										: "Select a table"
+									state.sourceConfig.table ? "Table selected" : "Select a table"
 								}
+								icon={state.sourceConfig.table ? "th" : "th-disconnect"}
 								intent={state.sourceConfig.table ? "success" : "primary"}
 							/>
 						</Tooltip2>
@@ -243,7 +267,7 @@ export const MySQL = () => {
 				style={{ marginLeft: 15 }}
 				labelElement={
 					<span>
-						use custom queries <i>(not recommended)</i>
+						use custom SELECT query <i>(only for advanced use cases)</i>
 					</span>
 				}
 				checked={state.sourceConfig.advanced || false}
@@ -258,6 +282,17 @@ export const MySQL = () => {
 					});
 				}}
 			/>
+			<Collapse isOpen={state.sourceConfig.advanced || false}>
+				<FormGroup helperText="This configuration step will not be validated. Please make sure that the query has been entered correctly. ">
+					<TextArea
+						value={state.sourceConfig.advancedConfig || "SELECT "}
+						onChange={handleCustomQueryChange}
+						fill={true}
+						intent="danger"
+						style={{ resize: "none", height: 100 }}
+					/>
+				</FormGroup>
+			</Collapse>
 			<ButtonGroup minimal={false} large={true} style={{ margin: 10 }}>
 				<Button
 					text={
