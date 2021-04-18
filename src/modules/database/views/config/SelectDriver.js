@@ -25,11 +25,11 @@ export const SelectDriver = () => {
 						});
 					}}
 				>
-					<Radio label="PostgreSQL" value="postgres" />
+					<Radio label="PostgreSQL" value="postgres" disabled={true} />
 					<Radio label="MySQL" value="mysql" />
-					<Radio label="MariaDB" value="mariadb" />
-					<Radio label="SQLite" value="sqlite" />
-					<Radio label="Microsoft SQL" value="microsoft" />
+					<Radio label="MariaDB" value="mariadb" disabled={true} />
+					<Radio label="SQLite" value="sqlite" disabled={true} />
+					<Radio label="Microsoft SQL" value="microsoft" disabled={true} />
 				</RadioGroup>
 			</FormGroup>
 		</div>
