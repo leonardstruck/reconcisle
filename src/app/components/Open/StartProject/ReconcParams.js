@@ -209,7 +209,10 @@ export const ReconcParams = (props) => {
 									/>
 								);
 							}}
-							popoverProps={{ popoverClassName: "scrollablePopover" }}
+							popoverProps={{
+								popoverClassName: "scrollablePopover",
+								minimal: true,
+							}}
 						>
 							<Button
 								text={
@@ -245,7 +248,10 @@ export const ReconcParams = (props) => {
 									/>
 								);
 							}}
-							popoverProps={{ popoverClassName: "scrollablePopover" }}
+							popoverProps={{
+								popoverClassName: "scrollablePopover",
+								minimal: true,
+							}}
 						>
 							<Button
 								text={
