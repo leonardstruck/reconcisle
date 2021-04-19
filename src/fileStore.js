@@ -52,6 +52,7 @@ export const fileStore = (store, method, obj, userDataPath) => {
 						name: obj.name,
 					});
 					saveToStore.set("data", obj.data);
+					saveToStore.set("config.timestamp", Date.now());
 					return { status: "ok" };
 				case "getConfig":
 					const storetocheck = new Store({

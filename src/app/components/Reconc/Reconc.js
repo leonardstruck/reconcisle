@@ -22,7 +22,11 @@ import {
 } from "@blueprintjs/popover2";
 import { Link, useLocation } from "react-router-dom";
 import { fileStoreHandler } from "../../services/fileStoreHandler";
+import { serviceHandler } from "../../services/serviceHandler";
 import { StatusAnimation } from "./StatusAnimation";
+import { Notifications } from "../../services/Notifications";
+import TimeAgo from "timeago-react";
+
 import {
 	reconciliationServiceHandler,
 	stopReconciliationServer,
@@ -55,7 +59,7 @@ export const Reconc = (props) => {
 		}).then((res) => {
 			dispatch({ type: "Reconciliation/SET_CONFIG", payload: res });
 		});
-	}, []);
+	}, [state.refreshIsLoading]);
 
 	const handleClick = () => {
 		switch (state.serviceStatus) {
@@ -82,6 +86,51 @@ export const Reconc = (props) => {
 				break;
 		}
 	};
+
+	const handleUpdate = () => {
+		dispatch({ type: "Reconciliation/TOGGLE_ISREFRESHING" });
+		serviceHandler(
+			state.configuration.general.sourceModule,
+			"getData",
+			state.configuration.sourceConfig
+		)
+			.then((res) => {
+				if (res.status === "ok") {
+					return fileStoreHandler({
+						store: "project",
+						method: "saveData",
+						obj: {
+							name: state.configuration.general.name,
+							data: res.data,
+						},
+					});
+				}
+			})
+			.then((res) => {
+				dispatch({ type: "Reconciliation/TOGGLE_ISREFRESHING" });
+				if (res.status === "ok") {
+					dispatch({
+						type: "Notification/ADD",
+						payload: {
+							message: "Data refreshed successfully",
+							intent: "success",
+						},
+					});
+				}
+			})
+			.catch((err) => {
+				dispatch({ type: "Reconciliation/TOGGLE_ISREFRESHING" });
+				dispatch({
+					type: "Notification/ADD",
+					payload: { message: err.toString(), intent: "danger" },
+				});
+				dispatch({
+					type: "Notification/ADD",
+					payload: { message: "Data couldn't be refreshed", intent: "warning" },
+				});
+			});
+	};
+
 	if (Object.keys(state.configuration).length === 0) {
 		return (
 			<div>
@@ -89,13 +138,18 @@ export const Reconc = (props) => {
 					<title>reconcIsle - {query.get("name")}</title>
 				</Helmet>
 				<Card elevation={Elevation.FOUR} className="centeredCard">
-					<NonIdealState icon={<Spinner />} title="Reading Database" />
+					<NonIdealState
+						icon={<Spinner />}
+						title="Loading"
+						description="this could take a while"
+					/>
 				</Card>
 			</div>
 		);
 	}
 	return (
 		<div>
+			<Notifications />
 			<Helmet>
 				<title>reconcIsle - {query.get("name")}</title>
 			</Helmet>
@@ -114,7 +168,13 @@ export const Reconc = (props) => {
 					}
 				/>
 				{state.configuration.moduleMetaData.canUpdate && (
-					<p className={Classes.TEXT_SMALL}>Data last updated on:</p>
+					<p className={Classes.TEXT_SMALL}>
+						Data updated{" "}
+						<TimeAgo
+							datetime={state.configuration.timestamp}
+							opts={{ minInterval: 60 }}
+						/>
+					</p>
 				)}
 				<ButtonGroup fill={true} minimal={true} large={true}>
 					<Button
@@ -151,7 +211,12 @@ export const Reconc = (props) => {
 									</p>
 								}
 							>
-								<Button intent="primary" icon="refresh">
+								<Button
+									intent="primary"
+									icon="refresh"
+									onClick={() => handleUpdate()}
+									loading={state.refreshIsLoading}
+								>
 									Refresh Data
 								</Button>
 							</Tooltip2>

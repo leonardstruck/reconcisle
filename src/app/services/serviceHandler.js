@@ -9,8 +9,11 @@ export async function serviceHandler(sourceModule, method, obj) {
 		method: method,
 		obj: obj,
 	});
-	const promise = new Promise((resolve) => {
+	const promise = new Promise((resolve, reject) => {
 		ipcRenderer.once(randomID, (event, data) => {
+			if (data.status === "error") {
+				reject(data.errorMessage);
+			}
 			resolve(data);
 		});
 	});

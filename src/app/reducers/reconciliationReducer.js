@@ -1,7 +1,6 @@
 const initialState = {
 	serviceStatus: "inactive",
-	loadingService: false,
-	loadingSource: false,
+	refreshIsLoading: false,
 	configuration: {},
 };
 
@@ -19,11 +18,14 @@ export const reconciliationReducer = (state = initialState, action) => {
 		case "Reconciliation/SERVICE_ISLOADING":
 			return { ...state, loading: action.payload };
 
+		case "Reconciliation/TOGGLE_ISREFRESHING":
+			return { ...state, refreshIsLoading: !state.refreshIsLoading };
+
 		case "Reconciliation/SET_CONFIG":
 			return { ...state, configuration: action.payload };
 
 		case "Reconciliation/CLEAR_CONFIG":
-			return { ...state, configuration: {} };
+			return initialState;
 
 		default:
 			return state;
