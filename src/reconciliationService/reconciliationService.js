@@ -92,11 +92,14 @@ const reconcileQueries = (rawQueries) => {
 
 const renderItem = (id) => {
 	const item = data.find((o) => o[IDColumn] == id);
-	let html = "<table border ='1'>";
+	let html =
+		"<html><head>" +
+		"<style>table{width:100%; border:0px; padding: 5px; table-layout: fixed;}td{padding: 5px;word-wrap: break-word; overflow-wrap: break-word;border:0px; width: 50%; background-color: rgba(0,0,0,0.1); height:40px; font-size:17px; font-family: Arial, sans-serif}</style>" +
+		"</head><body><table border ='1'>";
 	for (x in item) {
-		html += "<tr><td>" + x + "</td><td>" + item[x] + "</td></tr>";
+		html += "<tr><td><b>" + x + "</b></td><td>" + item[x] + "</td></tr>";
 	}
-	html += "</table>";
+	html += "</table></body></html>";
 	return html;
 };
 
@@ -136,7 +139,7 @@ fastify.post("/reconcile", (request, reply) => {
 });
 
 fastify.get("/view/:params", (request, reply) => {
-	reply.type("text/html");
+	reply.type("text/html; charset=utf-8");
 	reply.send(renderItem(request.params.params));
 });
 
