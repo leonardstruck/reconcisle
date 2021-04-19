@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 import Helmet from "react-helmet";
 import {
@@ -44,20 +44,25 @@ export const Reconc = (props) => {
 		return new URLSearchParams(useLocation().search);
 	}
 	let query = useQuery();
-	const projectName = query.get("name");
-	let projectConfiguration;
-	fileStoreHandler({
-		store: "project",
-		method: "getConfig",
-		obj: {
-			name: projectName,
-		},
-	}).then((res) => {
-		projectConfiguration = res;
-		setIsAbleToRefresh(
-			Modules.getMetaData(projectConfiguration.general.sourceModule).canUpdate
-		);
-	});
+	useEffect(() => {
+		const projectName = query.get("name");
+		fileStoreHandler({
+			store: "project",
+			method: "getConfig",
+			obj: {
+				name: projectName,
+			},
+		})
+			.then((res) => {
+				dispatch({ type: "Reconciliation/SET_CONFIG", payload: res });
+			})
+			.then(() => {
+				setIsAbleToRefresh(
+					Modules.getMetaData(state.configuration.general.sourceModule)
+						.canUpdate
+				);
+			});
+	}, []);
 
 	const handleClick = () => {
 		switch (state.serviceStatus) {
@@ -183,6 +188,7 @@ export const Reconc = (props) => {
 						intent="primary"
 						disabled={state.serviceStatus === "started"}
 						onClick={() => {
+							dispatch({ type: "Reconciliation/CLEAR_CONFIG" });
 							dispatch({ type: "Reconciliation/SERVICE_INACTIVE" });
 							history.push("/open");
 						}}
