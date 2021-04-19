@@ -1,14 +1,15 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
 import { Helmet } from "react-helmet";
 
-import { Button, Card, Elevation } from "@blueprintjs/core";
+import { Button, ButtonGroup, Card, Elevation } from "@blueprintjs/core";
 
 import { StartProject } from "./StartProject/StartProject";
 import { ProjectList } from "./ProjectList";
+import { useHistory } from "react-router";
 
 export const Open = () => {
 	const [startProjectState, setStartProjectState] = useState({ isOpen: false });
+	const history = useHistory();
 
 	return (
 		<div>
@@ -17,16 +18,23 @@ export const Open = () => {
 			</Helmet>
 			<Card elevation={Elevation.FOUR} className="centeredCard">
 				<ProjectList {...{ startProjectState, setStartProjectState }} />
-				<Link to="/">
+				<ButtonGroup fill={true} large={true} minimal={true}>
 					<Button
 						icon="arrow-left"
 						intent="primary"
-						large={true}
-						minimal={true}
+						onClick={() => history.push("/")}
 					>
 						Back
 					</Button>
-				</Link>
+					<Button
+						rightIcon="build"
+						intent="primary"
+						onClick={() => history.push("tools")}
+						disabled={true}
+					>
+						Tools
+					</Button>
+				</ButtonGroup>
 			</Card>
 			<StartProject
 				{...startProjectState}
