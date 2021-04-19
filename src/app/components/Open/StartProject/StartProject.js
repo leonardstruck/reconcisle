@@ -25,12 +25,15 @@ export const StartProject = (props) => {
 	const state = useSelector(selectStartProjectState);
 	const [isSubmitting, setIsSubmitting] = useState(false);
 	const handleSubmit = () => {
+		const moduleMetaData = Modules.getMetaData(state.sourceModule);
+		console.log("This is the moduleMetaDATA:", moduleMetaData);
 		setIsSubmitting(true);
 		fileStoreHandler({
 			store: "project",
 			method: "newProject",
 			obj: {
 				general: { name: state.name, sourceModule: state.sourceModule },
+				moduleMetaData: moduleMetaData,
 				sourceConfig: state.sourceConfig,
 				reconcParams: state.reconcParams,
 			},

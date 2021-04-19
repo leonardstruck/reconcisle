@@ -13,6 +13,7 @@ import {
 	Classes,
 	Dialog,
 	FormGroup,
+	Spinner,
 } from "@blueprintjs/core";
 import {
 	Popover2,
@@ -36,7 +37,6 @@ export const Reconc = (props) => {
 	const [animationState, setAnimationState] = useState("inactive");
 	const [port, setPort] = useState(1234);
 	const [drawerState, setDrawerState] = useState(false);
-	const [isAbleToRefresh, setIsAbleToRefresh] = useState(false);
 	const history = useHistory();
 	const dispatch = useDispatch();
 	const state = useSelector(selectReconciliationState);
@@ -52,16 +52,9 @@ export const Reconc = (props) => {
 			obj: {
 				name: projectName,
 			},
-		})
-			.then((res) => {
-				dispatch({ type: "Reconciliation/SET_CONFIG", payload: res });
-			})
-			.then(() => {
-				setIsAbleToRefresh(
-					Modules.getMetaData(state.configuration.general.sourceModule)
-						.canUpdate
-				);
-			});
+		}).then((res) => {
+			dispatch({ type: "Reconciliation/SET_CONFIG", payload: res });
+		});
 	}, []);
 
 	const handleClick = () => {
@@ -89,6 +82,18 @@ export const Reconc = (props) => {
 				break;
 		}
 	};
+	if (Object.keys(state.configuration).length === 0) {
+		return (
+			<div>
+				<Helmet>
+					<title>reconcIsle - {query.get("name")}</title>
+				</Helmet>
+				<Card elevation={Elevation.FOUR} className="centeredCard">
+					<NonIdealState icon={<Spinner />} title="Reading Database" />
+				</Card>
+			</div>
+		);
+	}
 	return (
 		<div>
 			<Helmet>
@@ -108,7 +113,7 @@ export const Reconc = (props) => {
 							: "Start the Service by clicking the button below"
 					}
 				/>
-				{isAbleToRefresh && (
+				{state.configuration.moduleMetaData.canUpdate && (
 					<p className={Classes.TEXT_SMALL}>Data last updated on:</p>
 				)}
 				<ButtonGroup fill={true} minimal={true} large={true}>
@@ -132,7 +137,7 @@ export const Reconc = (props) => {
 						{state.serviceStatus === "stopped" && "Restart"}
 						{state.serviceStatus === "started" && "Stop"}
 					</Button>
-					{isAbleToRefresh &&
+					{state.configuration.moduleMetaData.canUpdate &&
 						(state.serviceStatus === "inactive" ||
 							state.serviceStatus === "stopped") && (
 							<Tooltip2
