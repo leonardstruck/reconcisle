@@ -43,7 +43,10 @@
 					"appleIdPassword": "@keychain:Application Loader: leonard@blockform.at"
 				},
 				"icon": "./src/app/assets/icon/icon.icns",
-				"app-bundle-id": "com.leonardstruck.reconcisle"
+				"app-bundle-id": "com.leonardstruck.reconcisle",
+				"win32metadata": {
+					"CompanyName": "reconcIsle"
+				}
 			},
 			"publishers": [
 				{
@@ -61,10 +64,6 @@
 				{
 					"name": "@electron-forge/maker-squirrel",
 					"config": {
-						"name": "reconcIsle",
-						"authors": "reconcIsle",
-						"title": "reconcIsle",
-						"owners": "reconcIsle",
 						"iconUrl": "https://raw.githubusercontent.com/leonardstruck/reconcisle/main/src/app/assets/icon/icon.ico",
 						"setupIcon": "./src/app/assets/icon/icon.ico"
 					}
