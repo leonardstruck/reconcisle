@@ -10,7 +10,7 @@ import {
 	TextArea,
 	Collapse,
 } from "@blueprintjs/core";
-import { Classes, Popover2, Tooltip2 } from "@blueprintjs/popover2";
+import { Tooltip2 } from "@blueprintjs/popover2";
 import { Select } from "@blueprintjs/select";
 
 import React, { useEffect, useState } from "react";
@@ -151,6 +151,7 @@ export const MySQL = () => {
 						items={props.availableTables.map((table) => {
 							return { name: table };
 						})}
+						popoverProps={{ popoverClassName: "scrollablePopover" }}
 						itemRenderer={(table) => {
 							return (
 								<MenuItem
