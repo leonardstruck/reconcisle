@@ -8,7 +8,7 @@ reconcIsle is an electron app to easily build reconciliation services from your 
 
 ## Installation
 
-Recommended is the installation via one of the provided [releases](https://reconcisle.leonardstruck.com/).
+download packaged application [here](https://reconcisle.leonardstruck.com/).
 
 ## Usage
 
@@ -41,4 +41,3 @@ I'm planning on adding the following sources as well:
 These are the features I want to add:
 
 - import project files
-- custom queries
